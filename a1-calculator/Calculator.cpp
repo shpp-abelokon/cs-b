@@ -5,7 +5,6 @@
 #include "Calculator.h"
 #include <cmath>
 
-
 void Calculator::calculation(std::string *pString) {
     if (checkForRelevancy(pString)) {
         std::cout << "Invalid expression... " << std::endl;
@@ -52,16 +51,12 @@ void Calculator::transformUnaryOperators(std::string *pString) {
         char ch = tempString[i];
         if (isUnaryOperator(ch) && (i == 0 || tempString[i - 1] == '('
                                     || isOperator(tempString[i - 1]))) {
-            if (tempString[i - 1] == '(') {
-                *pString += '0';
-            } else {
-                *pString += "(0";
-                isUnary = true;
-            }
+            *pString += "(0";
+            isUnary = true;
             *pString += ch;
         } else if (isUnary && (!isNumber(ch) || i == tempString.length() - 1)) {
-            *pString += ch;
             *pString += ')';
+            *pString += ch;
             isUnary = false;
         } else {
             *pString += ch;
@@ -70,7 +65,6 @@ void Calculator::transformUnaryOperators(std::string *pString) {
 }
 
 void Calculator::postfixNotation(std::string *pString) {
-
     for (unsigned int i = 0; i < (*pString).length(); ++i) {
         char ch = (*pString)[i];
         if ((isOperator(ch) || ch == '(' || ch == ')') && number != "") {
@@ -79,6 +73,7 @@ void Calculator::postfixNotation(std::string *pString) {
         }
         if (isOperator(ch)) {
             while (!op.empty() && priority(ch) <= priority(op.back())) {
+                process_op(st, op.back());
                 op.pop_back();
             }
             op.push_back(ch);
