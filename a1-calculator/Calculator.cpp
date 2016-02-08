@@ -5,6 +5,7 @@
 #include "Calculator.h"
 #include <cmath>
 
+
 void Calculator::calculation(std::string *pString) {
     if (checkForRelevancy(pString)) {
         std::cout << "Invalid expression... " << std::endl;
@@ -143,5 +144,5 @@ bool Calculator::isUnaryOperator(char &ch) {
 }
 
 int Calculator::priority(char op) {
-    return op == '+' || op == '-' ? 1 : op == '*' || op == '/' || op == '^' ? 2 : -1;
+    return op == '+' || op == '-' ? 1 : op == '*' || op == '/' ? 2 : op == '^' ? 3 : -1;
 }
