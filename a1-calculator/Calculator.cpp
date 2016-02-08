@@ -6,10 +6,10 @@
 #include <cmath>
 
 void Calculator::calculation(std::string *pString) {
+    clearSpaces(pString);
     if (checkForRelevancy(pString)) {
         std::cout << "Invalid expression... " << std::endl;
     } else {
-        clearSpaces(pString);
         transformUnaryOperators(pString);
         postfixNotation(pString);
         std::cout << "Your expression: " << *pString;
