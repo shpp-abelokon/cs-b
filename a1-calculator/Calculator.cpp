@@ -43,6 +43,7 @@ void Calculator::clearSpaces(std::string *pString) {
 }
 
 void Calculator::transformUnaryOperators(std::string *pString) {
+    removeUnnecessaryCons(pString);
     isUnary = false;
     std::string tempString = *pString;
     *pString = "";
@@ -60,6 +61,20 @@ void Calculator::transformUnaryOperators(std::string *pString) {
             isUnary = false;
         } else {
             *pString += ch;
+        }
+    }
+}
+
+void Calculator::removeUnnecessaryCons(std::string *pString) {
+    std::string tempString = *pString;
+    *pString = "";
+    for (unsigned int i = 0; i < tempString.length(); ++i) {
+        char ch = tempString[i];
+        char ch2 = tempString[i+1];
+        if (ch == '-' && ch2 == '-'){
+            i++;
+        }else {
+            *pString+=ch;
         }
     }
 }

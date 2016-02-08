@@ -19,6 +19,7 @@ private:
     bool checkForRelevancy(std::string *pString);
     void clearSpaces(std::string *pString);
     void transformUnaryOperators(std::string *pString);
+    void removeUnnecessaryCons(std::string *pString);
     bool isNumber(char ch);
     bool isOperator(char ch);
     bool isUnaryOperator(char &ch);
@@ -37,6 +38,7 @@ public:
         std::string number;
         std::clog<<"Memory clear..."<<std::endl;
     };
+
 };
 
 
