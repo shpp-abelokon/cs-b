@@ -6,6 +6,7 @@
 #include <cmath>
 
 void Calculator::calculation(std::string *pString) {
+
     clearSpaces(pString);
     if (checkForRelevancy(pString)) {
         std::cout << "Invalid expression... " << std::endl;
@@ -47,7 +48,6 @@ void Calculator::transformUnaryOperators(std::string *pString) {
     isUnary = false;
     std::string tempString = *pString;
     *pString = "";
-
     for (unsigned int i = 0; i < tempString.length(); ++i) {
         char ch = tempString[i];
         if (isUnaryOperator(ch) && (i == 0 || tempString[i - 1] == '('
@@ -55,9 +55,11 @@ void Calculator::transformUnaryOperators(std::string *pString) {
             *pString += "(0";
             isUnary = true;
             *pString += ch;
-        } else if (isUnary && (!isNumber(ch) || i == tempString.length() - 1)) {
-            *pString += ')';
-            *pString += ch;
+        } else if (isUnary && (!isNumber(ch) || i == tempString.length()-1)) {
+            (i == tempString.length()-1)?(*pString =*pString+ ch+')') : *pString =*pString+ ')'+ch;
+//            *pString += ')';
+//            *pString += ch;
+//            *pString += ')';
             isUnary = false;
         } else {
             *pString += ch;
@@ -70,11 +72,11 @@ void Calculator::removeUnnecessaryCons(std::string *pString) {
     *pString = "";
     for (unsigned int i = 0; i < tempString.length(); ++i) {
         char ch = tempString[i];
-        char ch2 = tempString[i+1];
-        if (ch == '-' && ch2 == '-'){
-            i++;
-        }else {
-            *pString+=ch;
+        char ch2 = tempString[i + 1];
+        if (ch == '-' && ch2 == '-') {
+            (i == 0 || isOperator(tempString[i - 1]) || tempString[i - 1] == '(') ? i++ : (*pString += '+', i++);
+        } else {
+            (*pString += ch);
         }
     }
 }
@@ -82,7 +84,7 @@ void Calculator::removeUnnecessaryCons(std::string *pString) {
 void Calculator::postfixNotation(std::string *pString) {
     for (unsigned int i = 0; i < (*pString).length(); ++i) {
         char ch = (*pString)[i];
-        if ((isOperator(ch) || ch == '(' || ch == ')') && number != "") {
+        if ((isLetter(ch) || (isOperator(ch) || ch == '(' || ch == ')')) && number != "") {
             st.push_back(std::atof(number.c_str()));
             number = "";
         }
@@ -92,23 +94,27 @@ void Calculator::postfixNotation(std::string *pString) {
                 op.pop_back();
             }
             op.push_back(ch);
-        }
-        if (isNumber(ch)) {
+        } else if (isNumber(ch)) {
             number += ch;
             if (i == (*pString).length() - 1) {
                 st.push_back(std::atoi(number.c_str()));
                 number = "";
             }
-        }
-        if (ch == '(') {
+        } else if (ch == '(') {
             op.push_back('(');
-        }
-        if (ch == ')') {
+        } else if (ch == ')') {
             while (op.back() != '(') {
                 process_op(st, op.back());
                 op.pop_back();
             }
             op.pop_back();
+        } else if (isLetter(ch)) {
+            func += ch;
+            if (i == (*pString).length() - 1 || !isLetter((*pString)[i + 1])) {
+                fn.push_back(func);
+                op.push_back('f');
+                func = "";
+            }
         }
     }
     while (!op.empty()) {
@@ -118,27 +124,79 @@ void Calculator::postfixNotation(std::string *pString) {
 }
 
 void Calculator::process_op(std::vector<double> &st, char op) {
-    double r = st.back();
-    st.pop_back();
-    double l = st.back();
-    st.pop_back();
-    switch (op) {
-        case '+':
-            st.push_back(l + r);
-            break;
-        case '-':
-            st.push_back(l - r);
-            break;
-        case '*':
-            st.push_back(l * r);
-            break;
-        case '/':
-            st.push_back(l / r);
-            break;
-        case '^':
-            st.push_back(pow(l, r));
-            break;
+    if (op == 'f') {
+        process_fn(st, fn);
+    } else {
+        double r = st.back();
+        st.pop_back();
+        double l = st.back();
+        st.pop_back();
+        switch (op) {
+            case '+':
+                st.push_back(l + r);
+                break;
+            case '-':
+                st.push_back(l - r);
+                break;
+            case '*':
+                st.push_back(l * r);
+                break;
+            case '/':
+                st.push_back(l / r);
+                break;
+            case '^':
+                st.push_back(pow(l, r));
+                break;
+        }
     }
+}
+void Calculator::process_fn(std::vector<double> &st, std::vector<std::string> &fn) {
+    std::string f = fn.back();
+    if (f == "sin") {
+        double n = sin(st.back());
+        st.pop_back();
+        st.push_back(n);
+        fn.pop_back();
+    } else if (f == "cos") {
+        double n = cos(st.back());
+        st.pop_back();
+        st.push_back(n);
+        fn.pop_back();
+    } else if (f == "tan") {
+        double n = tan(st.back());
+        st.pop_back();
+        st.push_back(n);
+        fn.pop_back();
+    } else if (f == "log") {
+        double n = log2(st.back());
+        st.pop_back();
+        st.push_back(n);
+        fn.pop_back();
+    } else if (f == "abs") {
+        double n = std::abs(st.back());
+        st.pop_back();
+        st.push_back(n);
+        fn.pop_back();
+    }
+    else if (f == "sqrt") {
+        double n = sqrt(st.back());
+        st.pop_back();
+        st.push_back(n);
+        fn.pop_back();
+    } else if (f == "!") {
+        double n = factorial(st.back());
+        st.pop_back();
+        st.push_back(n);
+        fn.pop_back();
+    }
+}
+
+double Calculator::factorial(double operand) {
+    double result = 1;
+    for (int i = 1; i <= std::abs(operand); i++) {
+        result *= i;
+    }
+    return operand < 0 ? -result : result;
 }
 
 bool Calculator::isNumber(char ch) {
@@ -146,7 +204,7 @@ bool Calculator::isNumber(char ch) {
 }
 
 bool Calculator::isOperator(char ch) {
-    return ch == '+' || ch == '-' || ch == '*' || ch == '/' || ch == '^';
+    return ch == '+' || ch == '-' || ch == '*' || ch == '/' || ch == '^' || ch == 'f';
 }
 
 bool Calculator::isUnaryOperator(char &ch) {
@@ -154,5 +212,16 @@ bool Calculator::isUnaryOperator(char &ch) {
 }
 
 int Calculator::priority(char op) {
-    return op == '+' || op == '-' ? 1 : op == '*' || op == '/' ? 2 : op == '^' ? 3 : -1;
+    return op == '+' || op == '-' ? 1 : op == '*' || op == '/' ? 2 : op == '^' || op == 'f' ? 3 : -1;
 }
+
+bool Calculator::isLetter(char ch) {
+    return ((ch >= 97 && ch <= 122) || ch == '!');
+}
+
+bool Calculator::isFunction(std::string func) {
+    return func == "sqrt" || func == "sin" || func == "cos" || func == "tan" || func == "log" || func == "abs" ||
+           func == "!";
+}
+
+
