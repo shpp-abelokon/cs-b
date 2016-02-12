@@ -21,7 +21,7 @@ void Calculator::calculation(std::string *pString) {
 bool Calculator::checkForRelevancy(std::string *pString) {
     double l = 0, r = 0;
     char ch, ch2;
-    for (int i = 0; i < (*pString).length(); ++i) {
+    for (unsigned int i = 0; i < (*pString).length(); ++i) {
         ch = (*pString)[i];
         ch2 = (*pString)[i - 1];
         ch == '(' ? l++ : ch == ')' ? r++ : 0;
@@ -55,11 +55,8 @@ void Calculator::transformUnaryOperators(std::string *pString) {
             *pString += "(0";
             isUnary = true;
             *pString += ch;
-        } else if (isUnary && (!isNumber(ch) || i == tempString.length()-1)) {
-            (i == tempString.length()-1)?(*pString =*pString+ ch+')') : *pString =*pString+ ')'+ch;
-//            *pString += ')';
-//            *pString += ch;
-//            *pString += ')';
+        } else if (isUnary && (!isNumber(ch) || i == tempString.length() - 1)) {
+            (i == tempString.length() - 1) ? (*pString = *pString + ch + ')') : *pString = *pString + ')' + ch;
             isUnary = false;
         } else {
             *pString += ch;
@@ -150,6 +147,7 @@ void Calculator::process_op(std::vector<double> &st, char op) {
         }
     }
 }
+
 void Calculator::process_fn(std::vector<double> &st, std::vector<std::string> &fn) {
     std::string f = fn.back();
     if (f == "sin") {
@@ -193,7 +191,7 @@ void Calculator::process_fn(std::vector<double> &st, std::vector<std::string> &f
 
 double Calculator::factorial(double operand) {
     double result = 1;
-    for (int i = 1; i <= std::abs(operand); i++) {
+    for (unsigned int i = 1; i <= std::abs(operand); i++) {
         result *= i;
     }
     return operand < 0 ? -result : result;
