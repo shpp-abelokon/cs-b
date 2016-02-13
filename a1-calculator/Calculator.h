@@ -19,7 +19,7 @@ private:
     bool checkForRelevancy(std::string *pString);
     void clearSpaces(std::string *pString);
     void transformUnaryOperators(std::string *pString);
-    void removeUnnecessaryCons(std::string *pString);
+    void correctRecordMinusAndMultiplication(std::string *pString);
     bool isNumber(char ch);
     bool isOperator(char ch);
     bool isUnaryOperator(char &ch);
@@ -41,10 +41,10 @@ public:
     ~Calculator() {
         std::vector<double> st;
         std::vector<char> op;
+        std::vector<std::string> fn;
         std::string number;
         std::clog<<"Memory clear..."<<std::endl;
     };
-
 };
 
 

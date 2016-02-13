@@ -21,7 +21,7 @@ void Calculator::calculation(std::string *pString) {
 bool Calculator::checkForRelevancy(std::string *pString) {
     double l = 0, r = 0;
     char ch, ch2;
-    for (unsigned int i = 0; i < (*pString).length(); ++i) {
+    for (int i = 0; i < (*pString).length(); ++i) {
         ch = (*pString)[i];
         ch2 = (*pString)[i - 1];
         ch == '(' ? l++ : ch == ')' ? r++ : 0;
@@ -44,7 +44,8 @@ void Calculator::clearSpaces(std::string *pString) {
 }
 
 void Calculator::transformUnaryOperators(std::string *pString) {
-    removeUnnecessaryCons(pString);
+    correctRecordMinusAndMultiplication(pString);
+    std::cout << "После removeUnnecessaryCons :" << *pString << std::endl;
     isUnary = false;
     std::string tempString = *pString;
     *pString = "";
@@ -64,7 +65,7 @@ void Calculator::transformUnaryOperators(std::string *pString) {
     }
 }
 
-void Calculator::removeUnnecessaryCons(std::string *pString) {
+void Calculator::correctRecordMinusAndMultiplication(std::string *pString) {
     std::string tempString = *pString;
     *pString = "";
     for (unsigned int i = 0; i < tempString.length(); ++i) {
@@ -72,6 +73,20 @@ void Calculator::removeUnnecessaryCons(std::string *pString) {
         char ch2 = tempString[i + 1];
         if (ch == '-' && ch2 == '-') {
             (i == 0 || isOperator(tempString[i - 1]) || tempString[i - 1] == '(') ? i++ : (*pString += '+', i++);
+        } else if (ch == ')' && ch2 != '!' && (isLetter(ch2) || isNumber(ch2))) {
+            *pString += ch;
+            *pString += '*';
+        } else if (i > 0 && ch == '(' && (isNumber(tempString[i - 1])
+                                          || tempString[i - 1] == '!' || tempString[i - 1] == ')')) {
+                *pString += '*';
+                *pString += ch;
+
+        } else if (ch == '!' && isNumber(ch2)) {
+            *pString += ch;
+            *pString += '*';
+        } else if (isNumber(ch) && ch2 != '!'&& isLetter(ch2)) {
+            *pString += ch;
+            *pString += '*';
         } else {
             (*pString += ch);
         }
@@ -191,7 +206,7 @@ void Calculator::process_fn(std::vector<double> &st, std::vector<std::string> &f
 
 double Calculator::factorial(double operand) {
     double result = 1;
-    for (unsigned int i = 1; i <= std::abs(operand); i++) {
+    for (int i = 1; i <= std::abs(operand); i++) {
         result *= i;
     }
     return operand < 0 ? -result : result;
@@ -221,5 +236,4 @@ bool Calculator::isFunction(std::string func) {
     return func == "sqrt" || func == "sin" || func == "cos" || func == "tan" || func == "log" || func == "abs" ||
            func == "!";
 }
-
 
