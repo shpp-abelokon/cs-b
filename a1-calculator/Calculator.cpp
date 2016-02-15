@@ -5,6 +5,7 @@
 #include "Calculator.h"
 #include <cmath>
 
+
 void Calculator::calculation(std::string *pString) {
 
     clearSpaces(pString);
@@ -21,12 +22,37 @@ void Calculator::calculation(std::string *pString) {
 bool Calculator::checkForRelevancy(std::string *pString) {
     double l = 0, r = 0;
     char ch, ch2;
+    bool isBracket = false;
     for (int i = 0; i < (*pString).length(); ++i) {
         ch = (*pString)[i];
-        ch2 = (*pString)[i - 1];
         ch == '(' ? l++ : ch == ')' ? r++ : 0;
-        if (ch == '*' || ch == '/' || ch == '^' || ch == '!') {
-            if (isOperator(ch2)) {
+        if (ch == '(') {
+            isBracket = true;
+        }
+        if (ch == ')' && !isBracket) {
+            return true;
+        }
+        if (i == 0) {
+            if (ch == '*' || ch == '/' || ch == '^' || ch == '!' || ch == ')') {
+                return true;
+            }
+            if (ch == '+' && (*pString)[i + 1] == '+') {
+                return true;
+            }
+        }
+        if (i == (*pString).length() - 1) {
+            if (ch == '*' || ch == '/' || ch == '^' || ch == '+' || ch == '-' || ch == '(') {
+                return true;
+            }
+        }
+        if (i != 0 && i != (*pString).length()) {
+            ch2 = (*pString)[i - 1];
+            if (ch == '*' || ch == '/' || ch == '^' || ch == '!') {
+                if (isOperator(ch2)) {
+                    return true;
+                }
+            }
+            if (i > 2 && ch == '+' && ch2 == '+' && (*pString)[i - 2] == '+') {
                 return true;
             }
         }
@@ -45,7 +71,6 @@ void Calculator::clearSpaces(std::string *pString) {
 
 void Calculator::transformUnaryOperators(std::string *pString) {
     correctRecordMinusAndMultiplication(pString);
-    std::cout << "После removeUnnecessaryCons :" << *pString << std::endl;
     isUnary = false;
     std::string tempString = *pString;
     *pString = "";
@@ -78,13 +103,13 @@ void Calculator::correctRecordMinusAndMultiplication(std::string *pString) {
             *pString += '*';
         } else if (i > 0 && ch == '(' && (isNumber(tempString[i - 1])
                                           || tempString[i - 1] == '!' || tempString[i - 1] == ')')) {
-                *pString += '*';
-                *pString += ch;
+            *pString += '*';
+            *pString += ch;
 
         } else if (ch == '!' && isNumber(ch2)) {
             *pString += ch;
             *pString += '*';
-        } else if (isNumber(ch) && ch2 != '!'&& isLetter(ch2)) {
+        } else if (isNumber(ch) && ch2 != '!' && isLetter(ch2)) {
             *pString += ch;
             *pString += '*';
         } else {
