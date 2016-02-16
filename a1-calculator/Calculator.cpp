@@ -9,6 +9,7 @@
 void Calculator::calculation(std::string *pString) {
 
     clearSpaces(pString);
+    transform_str(pString, tolower);
     if (checkForRelevancy(pString)) {
         std::cout << "Invalid expression... " << std::endl;
     } else {
@@ -23,9 +24,18 @@ bool Calculator::checkForRelevancy(std::string *pString) {
     double l = 0, r = 0;
     char ch, ch2;
     bool isBracket = false;
+    std::string func2;
     for (int i = 0; i < (*pString).length(); ++i) {
         ch = (*pString)[i];
         ch == '(' ? l++ : ch == ')' ? r++ : 0;
+        if (isLetter(ch)) {
+            func2 += ch;
+        } else {
+            if (!func2.empty() && !isFunction(func2)) {
+                return true;
+            }
+            func2 = "";
+        }
         if (ch == '(') {
             isBracket = true;
         }
@@ -206,17 +216,11 @@ void Calculator::process_fn(std::vector<double> &st, std::vector<std::string> &f
         st.push_back(n);
         fn.pop_back();
     } else if (f == "log") {
-        double n = log2(st.back());
+        double n = log(st.back());
         st.pop_back();
         st.push_back(n);
         fn.pop_back();
-    } else if (f == "abs") {
-        double n = std::abs(st.back());
-        st.pop_back();
-        st.push_back(n);
-        fn.pop_back();
-    }
-    else if (f == "sqrt") {
+    } else if (f == "sqrt") {
         double n = sqrt(st.back());
         st.pop_back();
         st.push_back(n);
@@ -225,6 +229,27 @@ void Calculator::process_fn(std::vector<double> &st, std::vector<std::string> &f
         double n = factorial(st.back());
         st.pop_back();
         st.push_back(n);
+        fn.pop_back();
+    } else if (f == "a") {
+        if (a.empty()) {
+            std::cout << "Enter the value of the variable: a = ";
+            std::cin >> a;
+        }
+        st.push_back(std::atoi(a.c_str()));
+        fn.pop_back();
+    } else if (f == "b") {
+        if (b.empty()) {
+            std::cout << "Enter the value of the variable: b = ";
+            std::cin >> b;
+        }
+        st.push_back(std::atoi(b.c_str()));
+        fn.pop_back();
+    } else if (f == "c") {
+        if (c.empty()) {
+            std::cout << "Enter the value of the variable: c = ";
+            std::cin >> c;
+        }
+        st.push_back(std::atoi(c.c_str()));
         fn.pop_back();
     }
 }
@@ -258,7 +283,13 @@ bool Calculator::isLetter(char ch) {
 }
 
 bool Calculator::isFunction(std::string func) {
-    return func == "sqrt" || func == "sin" || func == "cos" || func == "tan" || func == "log" || func == "abs" ||
-           func == "!";
+    return func == "sqrt" || func == "sin" || func == "cos" || func == "tan" || func == "log" || func == "!" ||
+           func == "a" || func == "b" || func == "c";
 }
 
+void Calculator::transform_str(std::string *pString, int (*tolower)(int)) {
+    for (int i = 0; i < (*pString).length(); ++i) {
+        char res = (*pString)[i];
+        (*pString)[i] = (char) tolower(res);
+    }
+}
