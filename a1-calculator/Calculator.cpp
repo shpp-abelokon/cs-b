@@ -1,23 +1,29 @@
 //
 // Created by Alex Belokon on 08.02.16.
 //
-
+#include <iostream>
 #include "Calculator.h"
 #include <cmath>
 
-
-void Calculator::calculation(std::string *pString) {
-
+bool Calculator::isRelevance(std::string *pString) {
     clearSpaces(pString);
     transform_str(pString, tolower);
     if (checkForRelevancy(pString)) {
         std::cout << "Invalid expression... " << std::endl;
-    } else {
-        transformUnaryOperators(pString);
-        postfixNotation(pString);
-        std::cout << "Your expression: " << *pString;
-        std::cout << " = " << st.back() << std::endl;
+        return false;
     }
+    return true;
+}
+
+double Calculator::calculation(std::string *pString) {
+    double result;
+
+    transformUnaryOperators(pString);
+    postfixNotation(pString);
+    result = st.back();
+    st.pop_back();
+
+    return result;
 }
 
 bool Calculator::checkForRelevancy(std::string *pString) {
@@ -216,7 +222,7 @@ void Calculator::process_fn(std::vector<double> &st, std::vector<std::string> &f
         st.push_back(n);
         fn.pop_back();
     } else if (f == "log") {
-        double n = log(st.back());
+        double n = log2(st.back());
         st.pop_back();
         st.push_back(n);
         fn.pop_back();
@@ -233,21 +239,21 @@ void Calculator::process_fn(std::vector<double> &st, std::vector<std::string> &f
     } else if (f == "a") {
         if (a.empty()) {
             std::cout << "Enter the value of the variable: a = ";
-            std::cin >> a;
+            getline(std::cin, a);
         }
         st.push_back(std::atoi(a.c_str()));
         fn.pop_back();
     } else if (f == "b") {
         if (b.empty()) {
             std::cout << "Enter the value of the variable: b = ";
-            std::cin >> b;
+            getline(std::cin, b);
         }
         st.push_back(std::atoi(b.c_str()));
         fn.pop_back();
     } else if (f == "c") {
         if (c.empty()) {
             std::cout << "Enter the value of the variable: c = ";
-            std::cin >> c;
+            getline(std::cin, c);
         }
         st.push_back(std::atoi(c.c_str()));
         fn.pop_back();

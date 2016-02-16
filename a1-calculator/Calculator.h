@@ -14,7 +14,9 @@
 class Calculator {
 public:
 
-    void calculation(std::string *pString);
+    double calculation(std::string *pString);
+
+    bool isRelevance(std::string *pString);
 
 private:
     bool checkForRelevancy(std::string *pString);
@@ -66,6 +68,7 @@ public:
         std::string a, b, c;
         std::cout << "Memory clear..." << std::endl;
     };
+
 
 };
 
