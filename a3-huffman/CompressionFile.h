@@ -1,7 +1,7 @@
 //
 // Created by alex on 22.02.16.
 //
-
+ 
 #ifndef A3_HUFFMAN_COMPRESSIONFILE_H
 #define A3_HUFFMAN_COMPRESSIONFILE_H
 

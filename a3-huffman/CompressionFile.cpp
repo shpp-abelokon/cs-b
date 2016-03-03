@@ -1,6 +1,6 @@
 //
 // Created by alex on 22.02.16.
-//
+// 
 
 #include "CompressionFile.h"
 
