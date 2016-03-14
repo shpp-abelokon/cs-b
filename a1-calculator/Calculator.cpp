@@ -1,9 +1,9 @@
 //
 // Created by Alex Belokon on 08.02.16.
 //
-#include <iostream>
+
 #include "Calculator.h"
-#include <cmath>
+
 
 bool Calculator::isRelevance(std::string *pString) {
     clearSpaces(pString);

@@ -14,7 +14,7 @@ int main() {
     std::cout << "[ square root: sqrt(x) ] [ logarithm to the base 2 numbers: log(x) ]  " << std::endl;
     std::cout << "[ x in degree y: x^Y ] [ x factorial: x! ] [ variables: a,b,c ] " << std::endl;
     std::cout << "[ Close calculator C++: exit] " << std::endl << std::endl;
-    bool debug = true;
+    bool debug = false;
     if (debug) {
     UnitTest *testing = new UnitTest();
         testing->runTest();

@@ -5,11 +5,11 @@
 #ifndef A1_CALCULATOR_CALCULATOR_H
 #define A1_CALCULATOR_CALCULATOR_H
 
-#pragma once /* Защита от двойного подключения заголовочного файла */
-
+#include <iostream>
 #include <string>
 #include <vector>
-#include <iostream>
+#include <cmath>
+
 
 class Calculator {
 public:

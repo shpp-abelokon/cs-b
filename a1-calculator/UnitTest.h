@@ -5,6 +5,7 @@
 #ifndef A1_CALCULATOR_UNITTEST_H
 #define A1_CALCULATOR_UNITTEST_H
 
+#include <iostream>
 
 class UnitTest {
 

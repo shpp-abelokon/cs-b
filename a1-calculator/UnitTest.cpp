@@ -2,8 +2,6 @@
 // Created by alex on 16.02.16.
 //
 
-#include <string>
-#include <iostream>
 #include "UnitTest.h"
 #include "Calculator.h"
 
