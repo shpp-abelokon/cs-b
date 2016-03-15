@@ -1,12 +1,14 @@
 //
 // Created by alex on 22.02.16.
 //
-
-
+#include <iostream>
+#include <fstream>
+#include "Node.h"
 #include "CompressionProgram.h"
 
+#define DEBUG false
+
 using namespace std;
-bool debug = true;
 
 void CompressionProgram::compressFile(string *filename) {
 
@@ -26,7 +28,7 @@ void CompressionProgram::compressFile(string *filename) {
     createTableOfEncodedSymbol(root, table, code);
 
     /* Debug */
-    if (debug) {
+    if (DEBUG) {
         printBinaryTreeHuffman(root, 0); // Output to the console a binary tree Huffman.
     }
 
@@ -49,7 +51,7 @@ map<char, int> CompressionProgram::createMapSymbolsRating(string *pString) {
     str.close(); // Close the file that is read
 
     /* Debug */
-    if (debug) {
+    if (DEBUG) {
         map<char, int>::iterator itr;
         for (itr = mapChar.begin(); itr != mapChar.end(); itr++) { // The output to the console, the rating symbol
             cout << itr->first << " - " << itr->second << endl;
@@ -135,7 +137,7 @@ void CompressionProgram::createCompressedFile(string &codedFile, string filename
     /* Write the symbol table and the code in a compressed file */
     fileCompressed.put(sizeOfTableMap); // write to the file size of the table
     /*Debug*/
-    if (debug) {
+    if (DEBUG) {
         cout << "Write to file size of the table :" << (int) sizeOfTableMap << endl;
     }
     /* Write to file all of the characters and the codes of the table in turn. */
@@ -143,20 +145,20 @@ void CompressionProgram::createCompressedFile(string &codedFile, string filename
     for (itr = table.begin(); itr != table.end(); ++itr) {
         char symbol = itr->first;
         /* Debug */
-        if (debug) {
+        if (DEBUG) {
             cout << "Write to file symbol [ " << symbol;
         }
         fileCompressed.put(symbol); // write a symbol in the file
 
         vector<bool> tmp = itr->second;
         /* Debug */
-        if (debug) {
+        if (DEBUG) {
             cout << " ] size [ " << tmp.size() << " ] code: ";
         }
         fileCompressed.put((char) tmp.size()); // write size of tmp vector
 
         /* Debug */
-        if (debug) {
+        if (DEBUG) {
             for (int i = 0; i < tmp.size(); ++i) {
                 cout << tmp[i];
             }
@@ -204,7 +206,7 @@ vector<bool> *CompressionProgram::createAnEncodedFileContent(string filename, ma
     str.close(); // Close the file that is read
     CompressionProgram::sizeInBitsEncodedContent = (int) codedContents->size();
     /*Debug*/
-    if (debug) {
+    if (DEBUG) {
         cout << "Size in bits encoded content: " << codedContents->size() << endl;
     }
 
@@ -213,12 +215,12 @@ vector<bool> *CompressionProgram::createAnEncodedFileContent(string filename, ma
         while ((codedContents->size()) % 8 != 0) {
             codedContents->push_back(NULL); // Fill byte Null bits.
             /*Debug*/
-            if (debug) {
+            if (DEBUG) {
                 cout << "Size in bits encoded content: " << codedContents->size() << endl;
             }
         }
         /*Debug*/
-        if (debug) {
+        if (DEBUG) {
             cout << "Size in bytes of the encoded content: " << "[ " << codedContents->size() / 8 << " ]" << endl;
         }
     }

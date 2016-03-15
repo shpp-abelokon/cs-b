@@ -6,7 +6,7 @@
 
 #define CODED_FILE "test2.txt"
 #define DECODED_FILE "test2.txt.huff"
-#define DEBUG true
+#define DEBUG false
 
 using namespace std;
 

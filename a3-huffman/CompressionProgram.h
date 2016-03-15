@@ -5,11 +5,6 @@
 #ifndef A3_HUFFMAN_COMPRESSIONFILE_H
 #define A3_HUFFMAN_COMPRESSIONFILE_H
 
-
-#pragma once /* Защита от двойного подключения заголовочного файла */
-
-#include <iostream>
-#include <fstream>
 #include <map>
 #include <list>
 #include <vector>
