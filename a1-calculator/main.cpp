@@ -14,13 +14,9 @@ int main() {
     std::cout << "[ x in degree y: x^Y ] [ x factorial: x! ] [ variables: a,b,c ] " << std::endl;
     std::cout << "[ Close calculator C++: exit] " << std::endl << std::endl;
     if (DEBUG) {
-        unsigned int start_time =  clock();
         UnitTest *testing = new UnitTest();
         testing->runTest();
         delete (testing);
-        unsigned int end_time = clock();
-        unsigned int search_time = end_time - start_time; // time spent in debug
-        std::cout<<"Time spent in debug:"<<(double)search_time/1000<<"s"<<std::endl;
     } else {
         Calculator *calculator = new Calculator();
         while (true) {
