@@ -5,21 +5,17 @@
 #ifndef A1_CALCULATOR_CALCULATOR_H
 #define A1_CALCULATOR_CALCULATOR_H
 
-#include <iostream>
-#include <string>
 #include <vector>
-#include <cmath>
-
 
 class Calculator {
 public:
 
     double calculation(std::string *pString);
 
-    bool isRelevance(std::string *pString);
+    bool checkingString(std::string *pString);
 
 private:
-    bool checkForRelevancy(std::string *pString);
+    bool checkValidity(std::string *pString);
 
     void clearSpaces(std::string *pString);
 

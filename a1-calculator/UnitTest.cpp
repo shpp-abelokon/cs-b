@@ -44,7 +44,7 @@ void UnitTest::runTest() {
 void UnitTest::test(std::string test, double res) {
 
     Calculator *calculator = new Calculator();
-    calculator->isRelevance(&test);
+    calculator->checkingString(&test);
     double result = calculator->calculation(&test);
     std::cout << test << " = " << calculator->calculation(&test) << " / " << res << std::endl;
 

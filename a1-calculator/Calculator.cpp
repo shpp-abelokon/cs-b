@@ -1,14 +1,14 @@
 //
 // Created by Alex Belokon on 08.02.16.
 //
-
+#include <iostream>
+#include <cmath>
 #include "Calculator.h"
 
-
-bool Calculator::isRelevance(std::string *pString) {
+bool Calculator::checkingString(std::string *pString) {
     clearSpaces(pString);
     transform_str(pString, tolower);
-    if (checkForRelevancy(pString)) {
+    if (checkValidity(pString)) {
         std::cout << "Invalid expression... " << std::endl;
         return false;
     }
@@ -17,16 +17,14 @@ bool Calculator::isRelevance(std::string *pString) {
 
 double Calculator::calculation(std::string *pString) {
     double result;
-
     transformUnaryOperators(pString);
     postfixNotation(pString);
     result = st.back();
     st.pop_back();
-
     return result;
 }
 
-bool Calculator::checkForRelevancy(std::string *pString) {
+bool Calculator::checkValidity(std::string *pString) {
     double l = 0, r = 0;
     char ch, ch2;
     bool isBracket = false;
@@ -199,6 +197,8 @@ void Calculator::process_op(std::vector<double> &st, char op) {
                 break;
             case '^':
                 st.push_back(pow(l, r));
+                break;
+            default:
                 break;
         }
     }
