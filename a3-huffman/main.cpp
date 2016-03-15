@@ -4,14 +4,13 @@
 #include <iostream>
 #include "CompressionProgram.h"
 
-#define CODED_FILE "test.txt"
-#define DECODED_FILE "test.txt.huff"
-
+#define CODED_FILE "test2.txt"
+#define DECODED_FILE "test2.txt.huff"
+#define DEBUG true
 
 using namespace std;
 
 int main() {
-    bool debug = false;
     while (true) {
         cout << endl;
         cout << "File Compression, enter \"1\", enter \"2\" to decrypt the file, close the program enter \"exit\"." <<
@@ -23,7 +22,7 @@ int main() {
         }
         string filename;
         if (task == "1") {
-            if (debug) {
+            if (DEBUG) {
                 filename = CODED_FILE;
             } else {
                 cout << "Enter filename: ";
@@ -32,9 +31,8 @@ int main() {
             CompressionProgram *file = new CompressionProgram();
             file->compressFile(&filename);
             delete (file);
-
         } else if (task == "2") {
-            if (debug) {
+            if (DEBUG) {
                 filename = DECODED_FILE;;
             } else {
                 cout << "Enter filename: ";

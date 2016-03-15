@@ -1,7 +1,7 @@
 //
 // Created by alex on 22.02.16.
 //
-
+#include <stddef.h>
 #include "Node.h"
 
 Node::Node() {

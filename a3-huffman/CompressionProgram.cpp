@@ -6,7 +6,7 @@
 #include "CompressionProgram.h"
 
 using namespace std;
-bool debug = false;
+bool debug = true;
 
 void CompressionProgram::compressFile(string *filename) {
 

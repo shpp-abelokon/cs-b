@@ -5,8 +5,6 @@
 #ifndef A3_HUFFMAN_NODE_H
 #define A3_HUFFMAN_NODE_H
 
-#include <stddef.h>
-
 class Node {
 public:
     int value;
