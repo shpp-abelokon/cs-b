@@ -17,6 +17,8 @@ class myList {
     Node *head;
     Node *tail;
 public:
+    typedef T *iterator;
+
     myList();
 
     myList(const myList<T> &other);
@@ -34,9 +36,17 @@ public:
     void pop_back();
 
     void pop_front();
+
     size_t size();
-    T& front();
-    T& back();
+
+    T &front();
+
+    T &back();
+
+    iterator begin();
+
+    iterator end();
+
 
 };
 
@@ -123,7 +133,7 @@ void myList<T>::push_front(const T &value) {
 template<typename T>
 void myList<T>::pop_back() {
     if (empty()) {
-        cerr << "Error [pop_back]. The list is emprty." << endl;
+        cerr << "Error [pop_back]. The list is empty." << endl;
         exit(0);
     }
     tail = tail->prev;
@@ -140,7 +150,7 @@ void myList<T>::pop_back() {
 template<typename T>
 void myList<T>::pop_front() {
     if (empty()) {
-        cerr << "Error [pop_front]. The list is emprty." << endl;
+        cerr << "Error [pop_front]. The list is empty." << endl;
         exit(0);
     }
     head = head->next;
@@ -155,26 +165,37 @@ void myList<T>::pop_front() {
 
 }
 
-template <typename T>
+template<typename T>
 size_t myList<T>::size() {
     return count;
 }
 
-template <typename T>
-T& myList<T>::front() {
-   if(empty()){
-       cerr << "Error [front]. The list is empty." << endl;
-       exit(0);
-   }
+template<typename T>
+T &myList<T>::front() {
+    if (empty()) {
+        cerr << "Error [front]. The list is empty." << endl;
+        exit(0);
+    }
     return head->data;
 }
+
 template<typename T>
-T& myList<T>::back() {
-    if (empty()){
-        cerr<<"Errror[back].The list is empty."<<endl;
+T &myList<T>::back() {
+    if (empty()) {
+        cerr << "Error[back]. The list is empty." << endl;
         exit(0);
     }
     return tail->data;
+}
+
+template<typename T>
+typename myList<T>::iterator myList<T>::begin() {
+    return head;
+}
+
+template<typename T>
+typename myList<T>::iterator myList<T>::end() {
+    return tail;
 }
 
 
