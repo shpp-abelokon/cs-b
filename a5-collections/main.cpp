@@ -1,12 +1,27 @@
 #include <iostream>
+#include <vector>
+#include <list>
 #include "myVector.h"
+#include "myList.h"
 
 #define space cout<<"------------------------"<<endl;
-#define DEBUG_myVector true
+#define DEBUG_myVector false
+#define DEBUG_myList true
 using namespace std;
 
 int main() {
     cout << "Hello, World!" << endl;
+
+    if(DEBUG_myList){
+
+        myList<int> b;
+        b.push_back(10);
+        b.push_back(20);
+        b.push_back(30);
+        cout<<b.front()<<endl;
+
+    }
+
     if (DEBUG_myVector) {
         myVector<string> p;
         p.push_back("10");
