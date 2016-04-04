@@ -8,6 +8,7 @@ using namespace std;
 
 template<typename T>
 class myList {
+private:
     struct Node {
         T data;
         Node *next;
@@ -17,7 +18,43 @@ class myList {
     Node *head;
     Node *tail;
 public:
-    typedef T *iterator;
+
+    class iterator {
+
+    public:
+        Node *nodePtr;
+
+        iterator();
+
+        iterator(Node *ptr);
+
+        T &operator*();
+
+        iterator &operator++(int i) {
+            nodePtr = nodePtr->next;
+            return *this;
+        }
+
+        iterator &operator++() {
+            nodePtr = nodePtr->next;
+            return *this;
+        }
+
+        iterator &operator--(int i) {
+            nodePtr = nodePtr->prev;
+            return *this;
+        }
+
+        iterator &operator--() {
+            nodePtr = nodePtr->prev;
+            return *this;
+        }
+
+        bool operator==(const iterator &ptr);
+
+        bool operator!=(const iterator &ptr);
+
+    };
 
     myList();
 
@@ -37,18 +74,53 @@ public:
 
     void pop_front();
 
+    void insert(iterator itr, const T &value);
+
+    void erase(iterator itr);
+
     size_t size();
 
     T &front();
 
     T &back();
 
-    iterator begin();
+    iterator begin() {
+        iterator b(head);
+        return b;
+    }
 
-    iterator end();
-
+    iterator end() {
+        iterator e(tail->next);
+        return e;
+    }
 
 };
+
+template<typename T>
+myList<T>::iterator::iterator() {
+    nodePtr = NULL;
+}
+
+template<typename T>
+myList<T>::iterator::iterator(myList<T>::Node *ptr) {
+    nodePtr = ptr;
+}
+
+template<typename T>
+T &myList<T>::iterator::operator*() {
+    return nodePtr->data;
+}
+
+template<typename T>
+bool myList<T>::iterator::operator==(const iterator &ptr) {
+    return nodePtr == ptr.nodePtr;
+}
+
+template<typename T>
+bool myList<T>::iterator::operator!=(const iterator &ptr) {
+    return nodePtr != ptr.nodePtr;
+}
+
 
 /*Constructor*/
 template<typename T>
@@ -77,13 +149,11 @@ myList<T>::~myList() {
     clear();
 }
 
-
 /* Check the list is empty */
 template<typename T>
 bool myList<T>::empty() const {
     return (count == 0);
 }
-
 
 /* Delete all elements of the list */
 template<typename T>
@@ -97,18 +167,33 @@ void myList<T>::clear() {
 
 template<typename T>
 void myList<T>::push_back(const T &value) {
-    Node *n = new Node;
-    n->data = value;
-    n->prev = NULL;
-    n->next = NULL;
-    if (head == NULL) {
-        head = n;
-        tail = n;
+    if (!head) {
+        head = new Node;
+        head->data = value;
+        head->prev = NULL;
+        head->next = NULL;
+        tail = head;
     } else {
-        n->prev = tail;
-        tail->next = n;
-        tail = n;
+        tail->next = new Node;
+        tail->next->prev = tail;
+        tail = tail->next;
+        tail->next = NULL;
+        tail->data = value;
     }
+
+//    Node *n = new Node;
+//    n->data = value;
+//    n->prev = NULL;
+//    n->next = NULL;
+//    if (head == NULL) {
+//        head = n;
+//        tail = n;
+//    } else {
+//        n->prev = tail;
+//        tail->next = n;
+//        tail = n;
+//        tail->data=n->data;
+//    }
     count++;
 }
 
@@ -119,15 +204,13 @@ void myList<T>::push_front(const T &value) {
     n->prev = NULL;
     n->next = NULL;
     if (head == NULL) {
-        head = n;
-        tail = n;
+        tail = head = n;
     } else {
         n->next = head;
         head->prev = n;
         head = n;
     }
     count++;
-
 }
 
 template<typename T>
@@ -162,7 +245,6 @@ void myList<T>::pop_front() {
 //        count--;
 //    }
 
-
 }
 
 template<typename T>
@@ -189,13 +271,50 @@ T &myList<T>::back() {
 }
 
 template<typename T>
-typename myList<T>::iterator myList<T>::begin() {
-    return head;
+void myList<T>::insert(iterator itr, const T &value) {
+    if (empty()) {
+        cerr << "Error [insert]. The list is empty." << endl;
+        exit(0);
+    }
+    if (itr == begin()) {
+        push_front(value);
+    }
+    else if (itr == tail) {
+        push_back(value);
+
+    }
+    else if (itr != NULL) {
+        Node *n = new Node;
+        n->data = value;
+        n->next = itr.nodePtr;
+        n->prev = itr.nodePtr->prev;
+        itr.nodePtr->prev->next = n;
+        itr.nodePtr->prev = n;
+        count++;
+    } else {
+        cerr << "Error [insert]. Iterator is out of range." << endl;
+        exit(0);
+    }
 }
 
 template<typename T>
-typename myList<T>::iterator myList<T>::end() {
-    return tail;
+void myList<T>::erase(iterator itr) {
+    if (empty()) {
+        cerr << "Error [erase]. The list is empty." << endl;
+        exit(0);
+    }
+    else if (itr == begin()) {
+        pop_front();
+    } else if (itr == tail) {
+        pop_back();
+    }
+    else if (itr != NULL) {
+        itr.nodePtr->prev->next = itr.nodePtr->next;
+        itr.nodePtr->next->prev = itr.nodePtr->prev;
+        count--;
+    } else {
+        cerr << "Error [erase]. Iterator is out of rande." << endl;
+    }
 }
 
 

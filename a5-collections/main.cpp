@@ -18,7 +18,79 @@ int main() {
         b.push_back(10);
         b.push_back(20);
         b.push_back(30);
-        cout<<b.front()<<endl;
+
+        myList<int> f;
+//        f.head=b.begin();
+
+//        for (int i = 0; i <4 ; ++i, f.head=f.head->next) {
+//
+//            cout<<f.head->data<<endl;
+////            f.head=b.head->next;
+//        }
+
+        myList<int>::iterator itr=b.begin();
+        myList<int>::iterator itr_end=b.end();
+        myList<int>::iterator itr_temp;
+//        myList<int>::iterator itr_end;
+//        b.insert(itr+2,55);
+        itr_temp=b.begin();
+        for (int i=0; itr != itr_end; ++itr,i++) {
+            if(i==2){
+                b.insert(itr,50);
+            }
+
+            cout<<*itr<<endl;
+        }
+        space
+        itr=b.begin();
+        itr_end=b.end();
+        for (int i=0; itr != itr_end; itr++,i++) {
+            cout<<*itr<<endl;
+        }
+        space
+        itr=b.begin();
+        itr_end=b.end();
+//        b.erase(itr);
+        cout<<"back(): "<<b.back()<<endl;
+        for (int i=0; itr != itr_end; itr++,i++) {
+            if(i==3){
+
+//                b.pop_back();
+                b.erase(itr);
+                cout<<"itr равен: "<<*itr<<endl;
+            }
+
+        }
+        space
+        itr=b.begin();
+        itr_end=b.end();
+        for (int i=0; itr != itr_end; itr++,i++) {
+            cout<<*itr<<endl;
+        }
+//        cout<<b.front()<<endl;
+//        cout<<b.back()<<endl;
+        space
+//        itr=b.begin();
+//        cout<<(itr+1)->data<<endl;
+//        cout<<(itr+1)->data<<endl;
+//        cout<<(itr+1)->data<<endl;
+//        cout<<(itr+1)->data<<endl;
+//        space
+//        cout<<b.begin()<<endl;
+//        cout<<b.end()<<endl;
+        list<int> c;
+        c.push_back(11);
+        c.push_back(21);
+        c.push_back(31);
+        list<int>::iterator itr2=c.begin();
+        list<int>::iterator itr2_end=c.end();
+        for (int j=0; itr2 !=itr2_end ; itr2++,j++) {
+            if (j==2){
+                c.erase(itr2);
+                cout<<"c.erase(itr2):"<<endl;
+            }
+        }
+
 
     }
 
