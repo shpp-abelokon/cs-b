@@ -17,6 +17,8 @@ private:
     size_t count;
     Node *head;
     Node *tail;
+
+
 public:
 
     class iterator {
@@ -78,6 +80,8 @@ public:
 
     void erase(iterator itr);
 
+    void swap(myList &other);
+
     size_t size();
 
     T &front();
@@ -93,7 +97,10 @@ public:
         iterator e(tail->next);
         return e;
     }
+
     void operator=(const T &other);
+
+
 };
 
 template<typename T>
@@ -120,8 +127,6 @@ template<typename T>
 bool myList<T>::iterator::operator!=(const iterator &ptr) {
     return nodePtr != ptr.nodePtr;
 }
-
-
 
 
 /*Constructor*/
@@ -169,33 +174,19 @@ void myList<T>::clear() {
 
 template<typename T>
 void myList<T>::push_back(const T &value) {
-    if (!head) {
-        head = new Node;
-        head->data = value;
-        head->prev = NULL;
-        head->next = NULL;
-        tail = head;
+    Node *n = new Node;
+    n->data = value;
+    n->prev = NULL;
+    n->next = NULL;
+    if (head == NULL) {
+        head = n;
+        tail = n;
     } else {
-        tail->next = new Node;
-        tail->next->prev = tail;
-        tail = tail->next;
-        tail->next = NULL;
-        tail->data = value;
+        n->prev = tail;
+        tail->next = n;
+        tail = n;
+        tail->data=n->data;
     }
-
-//    Node *n = new Node;
-//    n->data = value;
-//    n->prev = NULL;
-//    n->next = NULL;
-//    if (head == NULL) {
-//        head = n;
-//        tail = n;
-//    } else {
-//        n->prev = tail;
-//        tail->next = n;
-//        tail = n;
-//        tail->data=n->data;
-//    }
     count++;
 }
 
@@ -223,13 +214,6 @@ void myList<T>::pop_back() {
     }
     tail = tail->prev;
     (tail == NULL) ? head = NULL : tail->next = NULL, count--;
-
-//    if (tail==NULL){
-//        head=NULL;
-//    } else {
-//        tail->next=NULL;
-//        count--;
-//    }
 }
 
 template<typename T>
@@ -240,13 +224,6 @@ void myList<T>::pop_front() {
     }
     head = head->next;
     (head == NULL) ? tail = NULL : head->prev = NULL, count--;
-//    if(head==NULL){
-//        tail=NULL;
-//    } else{
-//        head->prev=NULL;
-//        count--;
-//    }
-
 }
 
 template<typename T>
@@ -281,7 +258,7 @@ void myList<T>::insert(iterator itr, const T &value) {
     if (itr == begin()) {
         push_front(value);
     }
-    else if (itr == tail) {
+    else if (itr == end()) {
         push_back(value);
 
     }
@@ -321,10 +298,27 @@ void myList<T>::erase(iterator itr) {
 
 template<typename T>
 void myList<T>::operator=(const T &other) {
-    if(head!=other->head){
-        head=other->head;
-        tail=other->tail;
-        count=other->count;
+    if (head != other->head) {
+        head = other->head;
+        tail = other->tail;
+        count = other->count;
+    }
+}
+
+template<typename T>
+void myList<T>::swap(myList &other) {
+    if (other.head != head && other.tail != tail) {
+        Node *head_tmp = other.head;
+        Node *tail_tmp = other.tail;
+        size_t count_tmp = other.count;
+
+        other.head = head;
+        other.tail = tail;
+        other.count = count;
+        head = head_tmp;
+        tail = tail_tmp;
+        count = count_tmp;
+
     }
 }
 

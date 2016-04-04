@@ -12,92 +12,90 @@ using namespace std;
 int main() {
     cout << "Hello, World!" << endl;
 
-    if(DEBUG_myList){
+    if (DEBUG_myList) {
 
-        myList<int> b;
-        b.push_back(10);
-        b.push_back(20);
-        b.push_back(30);
-
-        myList<int> f;
-        f.push_back(90);
-        f.push_back(80);
-        f.push_back(70);
-        f.push_back(60);
-        b=f;
-//        f.head=b.begin();
-
-//        for (int i = 0; i <4 ; ++i, f.head=f.head->next) {
-//
-//            cout<<f.head->data<<endl;
-////            f.head=b.head->next;
-//        }
-
-        myList<int>::iterator itr=b.begin();
-        myList<int>::iterator itr_end=b.end();
-        myList<int>::iterator itr_temp;
-//        myList<int>::iterator itr_end;
-//        b.insert(itr+2,55);
-        itr_temp=b.begin();
-        for (int i=0; itr != itr_end; ++itr,i++) {
-            if(i==2){
-                b.insert(itr,50);
-            }
-
-            cout<<*itr<<endl;
+        myList<string> b;
+        b.push_back("Java");
+        b.push_back("C++");
+        myList<string>::iterator itr;
+        myList<string>::iterator itr_end;
+        itr = b.begin();
+        itr_end = b.end();
+        for (int i = 0; itr != itr_end; ++itr, i++) {
+            cout << "myList b [" << i << "] " << *itr << endl;
         }
+        cout << "myList b.size: " << b.size() << endl;
         space
-        itr=b.begin();
-        itr_end=b.end();
-        for (int i=0; itr != itr_end; itr++,i++) {
-            cout<<*itr<<endl;
+        cout << "The called method p.front(\"Ruby\");" << endl;
+        b.push_front("Ruby");
+        itr = b.begin();
+        itr_end = b.end();
+        for (int i = 0; itr != itr_end; ++itr, i++) {
+            cout << "myList b [" << i << "] " << *itr << endl;
         }
+        cout << "myList b.size: " << b.size() << endl;
         space
-        itr=b.begin();
-        itr_end=b.end();
-//        b.erase(itr);
-        cout<<"back(): "<<b.back()<<endl;
-        for (int i=0; itr != itr_end; itr++,i++) {
-            if(i==3){
-
-//                b.pop_back();
-                b.erase(itr);
-                cout<<"itr равен: "<<*itr<<endl;
-            }
-
+        cout << "The called method b.insert(itr_end,\"C#\");" << endl;
+        itr = b.begin();
+        itr_end = b.end();
+        b.insert(itr_end, "C#");
+        for (int i = 0; itr != itr_end; ++itr, i++) {
+            cout << "myList b [" << i << "] " << *itr << endl;
         }
+        cout << "myList b.size: " << b.size() << endl;
         space
-        itr=b.begin();
-        itr_end=b.end();
-        for (int i=0; itr != itr_end; itr++,i++) {
-            cout<<*itr<<endl;
+        cout << "Create a second 'a' list and fill in {\"rshmelev\",\"abelokon\",\"shpp\"} " << endl;
+        myList<string> a;
+        a.push_back("rshmelev");
+        a.push_back("abelokon");
+        a.push_back("shpp");
+        cout << "The called method b.swap(a);" << endl;
+        b.swap(a);
+        itr = b.begin();
+        itr_end = b.end();
+        for (int i = 0; itr != itr_end; ++itr, i++) {
+            cout << "myList b [" << i << "] " << *itr << endl;
         }
-//        cout<<b.front()<<endl;
-//        cout<<b.back()<<endl;
+        cout << "myList b.size: " << b.size() << endl;
         space
-//        itr=b.begin();
-//        cout<<(itr+1)->data<<endl;
-//        cout<<(itr+1)->data<<endl;
-//        cout<<(itr+1)->data<<endl;
-//        cout<<(itr+1)->data<<endl;
-//        space
-//        cout<<b.begin()<<endl;
-//        cout<<b.end()<<endl;
-        list<string> c;
-        c.push_back("viktor");
-        c.push_back("Bell");
-        c.push_back("Alex");
-        c.sort();
-        list<string>::iterator itr2=c.begin();
-        list<string>::iterator itr2_end=c.end();
-        for (int j=0; itr2 !=itr2_end ; itr2++,j++) {
-//            if (j==2){
-//                c.erase(itr2);
-                cout<<"["<<j<<"] "<<*itr2<<endl;
-//            }
+        cout << "Assign the list \"b=a\": " << endl;
+        b = a;
+        itr = b.begin();
+        itr_end = b.end();
+        for (int i = 0; itr != itr_end; ++itr, i++) {
+            cout << "myList b [" << i << "] " << *itr << endl;
         }
-
-
+        cout << "myList b.size: " << b.size() << endl;
+        space
+        cout << "The called method b.erase(itr);" << endl;
+        itr = b.begin();
+        itr_end = b.end();
+        b.erase(itr);
+        itr = b.begin();
+        for (int i = 0; itr != itr_end; ++itr, i++) {
+            cout << "myList b [" << i << "] " << *itr << endl;
+        }
+        cout << "myList b.size: " << b.size() << endl;
+        space
+        cout << "The called method b.front(); " << b.front() << endl;
+        cout << "The called method b.back(); " << b.back() << endl;
+        cout << "The called method b.pop_front();" << endl;
+        b.pop_front();
+        itr = b.begin();
+        itr_end = b.end();
+        for (int i = 0; itr != itr_end; ++itr, i++) {
+            cout << "myList b [" << i << "] " << *itr << endl;
+        }
+        cout << "myList b.size: " << b.size() << endl;
+        space
+        cout << "The called method b.pop_back();" << endl;
+        b.pop_back();
+        itr = b.begin();
+        itr_end = b.end();
+        for (int i = 0; itr != itr_end; ++itr, i++) {
+            cout << "myList b [" << i << "] " << *itr << endl;
+        }
+        cout << "myList b.size: " << b.size() << endl;
     }
 
     if (DEBUG_myVector) {
@@ -108,7 +106,7 @@ int main() {
         for (int i = 0; i < p.size(); ++i) {
             cout << "myVector p [" << i << "] " << p[i] << endl;
         }
-        cout << "The called method p.resize(6,\"40\");"<<endl;
+        cout << "The called method p.resize(6,\"40\");" << endl;
         p.resize(6, "40");
         for (int i = 0; i < p.size(); ++i) {
             cout << "myVector p [" << i << "] " << p[i] << endl;
@@ -167,7 +165,7 @@ int main() {
         }
         space
         cout << "The called method p.insert(1,\"abelokon\"); " << endl;
-        p.insert(1,"abelokon");
+        p.insert(1, "abelokon");
         for (int j = 0; j < p.size(); ++j) {
             cout << "myVector p [" << j << "] " << p[j] << endl;
         }
