@@ -93,7 +93,7 @@ public:
         iterator e(tail->next);
         return e;
     }
-
+    void operator=(const T &other);
 };
 
 template<typename T>
@@ -120,6 +120,8 @@ template<typename T>
 bool myList<T>::iterator::operator!=(const iterator &ptr) {
     return nodePtr != ptr.nodePtr;
 }
+
+
 
 
 /*Constructor*/
@@ -314,6 +316,15 @@ void myList<T>::erase(iterator itr) {
         count--;
     } else {
         cerr << "Error [erase]. Iterator is out of rande." << endl;
+    }
+}
+
+template<typename T>
+void myList<T>::operator=(const T &other) {
+    if(head!=other->head){
+        head=other->head;
+        tail=other->tail;
+        count=other->count;
     }
 }
 
