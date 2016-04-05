@@ -1,16 +1,54 @@
 #include <iostream>
 #include <vector>
 #include <list>
+#include <stack>
 #include "myVector.h"
 #include "myList.h"
+#include "myStack.h"
 
 #define space cout<<"------------------------"<<endl;
 #define DEBUG_myVector false
-#define DEBUG_myList true
+#define DEBUG_myList false
+#define DEBUG_myStack true
 using namespace std;
 
 int main() {
     cout << "Hello, World!" << endl;
+    if (DEBUG_myStack) {
+        cout << "Create a first 'a' stack and fill in {\"Java\",\"C++\"} " << endl;
+        myStack<string> a;
+        a.push("Java");
+        a.push("C+");
+        cout << "myStack a.size: " << a.size() << endl;
+        cout << "myStack a.capacity: " << a.capacity() << endl;
+        cout << "myStack a.top(): " << a.top() << endl;
+        space
+        cout << "The called method a.push(\"Ruby\");" << endl;
+        a.push("Ruby");
+        cout << "myStack a.size: " << a.size() << endl;
+        cout << "myStack a.capacity: " << a.capacity() << endl;
+        cout << "myStack a.top(): " << a.top() << endl;
+        space
+        cout << "The called method a.pop();" << endl;
+        a.pop();
+        cout << "myStack a.size: " << a.size() << endl;
+        cout << "myStack a.capacity: " << a.capacity() << endl;
+        cout << "myStack a.top(): " << a.top() << endl;
+        space
+        cout << "Create a second 'b' stack and fill in {\"rshmelev\",\"abelokon\",\"shpp\"}" << endl;
+        myStack<string> b;
+        a.push("rshmelev");
+        a.push("abelokon");
+        a.push("shpp");
+        cout << "Compare the stack \"a==b\": " << boolalpha << (a == b) << endl;
+        cout << "Compare the stack \"a!=b\": " << boolalpha << (a != b) << endl;
+        space
+        cout << "Assign the stack \"a=b\": " << endl;
+        a = b;
+        cout << "Compare the stack \"a==b\": " << boolalpha << (a == b) << endl;
+        cout << "Compare the stack \"a!=b\": " << boolalpha << (a != b) << endl;
+        cout << "The called method a.empty(): " << boolalpha << a.empty() << endl;
+    }
 
     if (DEBUG_myList) {
 

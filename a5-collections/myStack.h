@@ -13,12 +13,16 @@ class myStack {
     size_t _top; // the number of elements in stack
     size_t _capacity; // the current size of the stack
 
+    void resize();
+
     void resize(const size_t _size);
 
     bool equal(const myStack<T> &stack);
 
 public:
-    myStack(size_t size = 1);
+    myStack(size_t size = 2);
+
+    myStack(const myStack<T> &other);
 
     ~myStack();
 
@@ -47,16 +51,27 @@ myStack<T>::myStack(size_t size) {
     if (size < 0) {
         std::cerr << "Error [size]. Use positive size of the stack." << std::endl;
     }
+
     stackPtr = new T[size];
     _top = 0;
     _capacity = size;
 
 }
 
+template<typename T>
+myStack<T>::myStack(const myStack<T> &other) {
+    _top = other._top;
+    _capacity = other._capacity;
+    stackPtr = new T[_capacity];
+    for (int i = 0; i < _top; ++i) {
+        stackPtr[i] = other.stackPtr[i];
+    }
+}
+
 /* Destructor */
 template<typename T>
 myStack<T>::~myStack() {
-    delete[] stackPtr;
+//    delete[] stackPtr;
 }
 
 /* The number of elements in the stack */
@@ -83,10 +98,23 @@ void myStack<T>::push(const T &value) {
 
 /* Change the size of the current stack */
 template<typename T>
+void myStack<T>::resize() {
+    _capacity *= 2;
+    T *tmpPtr = new T[_capacity];
+    for (int i = 0; i < _top; ++i) {
+        tmpPtr[i] = stackPtr[i];
+    }
+    T *tmp = stackPtr;
+    stackPtr = tmpPtr;
+    delete[]tmp;
+}
+
+/* Change the size of the current stack */
+template<typename T>
 void myStack<T>::resize(const size_t _size) {
     _capacity = _size * 2;
     T *tmpPtr = new T[_capacity];
-    for (int i = 0; i < _capacity; ++i) {
+    for (int i = 0; i < _top; ++i) {
         tmpPtr[i] = stackPtr[i];
     }
     T *tmp = stackPtr;
@@ -139,7 +167,7 @@ bool myStack<T>::operator==(const myStack &other) {
 /* Overload operator != */
 template<typename T>
 bool myStack<T>::operator!=(const myStack &other) {
-    return (stackPtr != other.stackPtr) ? true : (_top == other._top) ? false : equal(other);
+    return (stackPtr == other.stackPtr) ? false : (_top == other._top) ? false : equal(other);
 }
 
 /* A comparison of two objects */
