@@ -6,7 +6,7 @@
 
 #ifndef A5_COLLECTIONS_MYLIST_H
 #define A5_COLLECTIONS_MYLIST_H
-using namespace std;
+
 
 template<typename T>
 class myList {
@@ -159,7 +159,7 @@ myList<T>::myList(const myList<T> &other) {
             push_back(n->data);
         }
     } else {
-        cerr << "Error [copy constructor]. Try to copy empty list..." << endl;
+        std::cerr << "Error [copy constructor]. Try to copy empty list..." << std::endl;
     }
 }
 
@@ -225,7 +225,7 @@ void myList<T>::push_front(const T &value) {
 template<typename T>
 void myList<T>::pop_back() {
     if (empty()) {
-        cerr << "Error [pop_back]. The list is empty." << endl;
+        std::cerr << "Error [pop_back]. The list is empty." << std::endl;
         exit(0);
     }
     tail = tail->prev;
@@ -236,7 +236,7 @@ void myList<T>::pop_back() {
 template<typename T>
 void myList<T>::pop_front() {
     if (empty()) {
-        cerr << "Error [pop_front]. The list is empty." << endl;
+        std::cerr << "Error [pop_front]. The list is empty." << std::endl;
         exit(0);
     }
     head = head->next;
@@ -253,7 +253,7 @@ size_t myList<T>::size() {
 template<typename T>
 T &myList<T>::front() {
     if (empty()) {
-        cerr << "Error [front]. The list is empty." << endl;
+        std::cerr << "Error [front]. The list is empty." << std::endl;
         exit(0);
     }
     return head->data;
@@ -263,7 +263,7 @@ T &myList<T>::front() {
 template<typename T>
 T &myList<T>::back() {
     if (empty()) {
-        cerr << "Error[back]. The list is empty." << endl;
+        std::cerr << "Error[back]. The list is empty." << std::endl;
         exit(0);
     }
     return tail->data;
@@ -274,7 +274,7 @@ T &myList<T>::back() {
 template<typename T>
 void myList<T>::insert(iterator itr, const T &value) {
     if (empty()) {
-        cerr << "Error [insert]. The list is empty." << endl;
+        std::cerr << "Error [insert]. The list is empty." << std::endl;
         exit(0);
     }
     if (itr == begin()) {
@@ -293,7 +293,7 @@ void myList<T>::insert(iterator itr, const T &value) {
         itr.nodePtr->prev = n;
         count++;
     } else {
-        cerr << "Error [insert]. Iterator is out of range." << endl;
+        std::cerr << "Error [insert]. Iterator is out of range." <<  std::endl;
         exit(0);
     }
 }
@@ -302,7 +302,7 @@ void myList<T>::insert(iterator itr, const T &value) {
 template<typename T>
 void myList<T>::erase(iterator itr) {
     if (empty()) {
-        cerr << "Error [erase]. The list is empty." << endl;
+        std::cerr << "Error [erase]. The list is empty." <<  std::endl;
         exit(0);
     }
     else if (itr == begin()) {
@@ -315,7 +315,7 @@ void myList<T>::erase(iterator itr) {
         itr.nodePtr->next->prev = itr.nodePtr->prev;
         count--;
     } else {
-        cerr << "Error [erase]. Iterator is out of rande." << endl;
+        std::cerr << "Error [erase]. Iterator is out of rande." <<  std::endl;
     }
 }
 
