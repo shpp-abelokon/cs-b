@@ -1,5 +1,7 @@
 //
-// Created by alex on 28.03.16.
+// Created by abelokon on 28.03.16.
+// File: myList.h
+// Author abelokon
 //
 
 #ifndef A5_COLLECTIONS_MYLIST_H
@@ -32,21 +34,25 @@ public:
 
         T &operator*();
 
+        /* Overload the operator increment ++ to iterator */
         iterator &operator++(int i) {
             nodePtr = nodePtr->next;
             return *this;
         }
 
+        /* Overload the operator prefix increment ++ to iterator */
         iterator &operator++() {
             nodePtr = nodePtr->next;
             return *this;
         }
 
+        /* Overload the operator decrement -- to iterator */
         iterator &operator--(int i) {
             nodePtr = nodePtr->prev;
             return *this;
         }
 
+        /* Overload the operator prefix increment -- to iterator */
         iterator &operator--() {
             nodePtr = nodePtr->prev;
             return *this;
@@ -88,11 +94,13 @@ public:
 
     T &back();
 
+    /* Pointer to the start of the list */
     iterator begin() {
         iterator b(head);
         return b;
     }
 
+    /* Pointer to the end of the list */
     iterator end() {
         iterator e(tail->next);
         return e;
@@ -103,40 +111,45 @@ public:
 
 };
 
+/* Constructor iterator */
 template<typename T>
 myList<T>::iterator::iterator() {
     nodePtr = NULL;
 }
 
+/* Copy-constructor iterator*/
 template<typename T>
 myList<T>::iterator::iterator(myList<T>::Node *ptr) {
     nodePtr = ptr;
 }
 
+/* Overload the operator * to iterator */
 template<typename T>
 T &myList<T>::iterator::operator*() {
     return nodePtr->data;
 }
 
+/* Overload the operator == to iterator */
 template<typename T>
 bool myList<T>::iterator::operator==(const iterator &ptr) {
     return nodePtr == ptr.nodePtr;
 }
 
+/* Overload the operator != to iterator */
 template<typename T>
 bool myList<T>::iterator::operator!=(const iterator &ptr) {
     return nodePtr != ptr.nodePtr;
 }
 
 
-/*Constructor*/
+/* Constructor */
 template<typename T>
 myList<T>::myList() {
     head = tail = NULL;
     count = 0;
 }
 
-/*Copy-constructor*/
+/* Copy-constructor */
 template<typename T>
 myList<T>::myList(const myList<T> &other) {
     if (!other.empty()) {
@@ -172,6 +185,7 @@ void myList<T>::clear() {
     count = 0;
 }
 
+/* Add element to the end of list */
 template<typename T>
 void myList<T>::push_back(const T &value) {
     Node *n = new Node;
@@ -185,11 +199,12 @@ void myList<T>::push_back(const T &value) {
         n->prev = tail;
         tail->next = n;
         tail = n;
-        tail->data=n->data;
+        tail->data = n->data;
     }
     count++;
 }
 
+/* Add element to the start of list */
 template<typename T>
 void myList<T>::push_front(const T &value) {
     Node *n = new Node;
@@ -206,6 +221,7 @@ void myList<T>::push_front(const T &value) {
     count++;
 }
 
+/* Delete the last element from the list */
 template<typename T>
 void myList<T>::pop_back() {
     if (empty()) {
@@ -216,6 +232,7 @@ void myList<T>::pop_back() {
     (tail == NULL) ? head = NULL : tail->next = NULL, count--;
 }
 
+/* Delete the first element from the list */
 template<typename T>
 void myList<T>::pop_front() {
     if (empty()) {
@@ -226,11 +243,13 @@ void myList<T>::pop_front() {
     (head == NULL) ? tail = NULL : head->prev = NULL, count--;
 }
 
+/* Number of elements of the list */
 template<typename T>
 size_t myList<T>::size() {
     return count;
 }
 
+/* The first element in the list */
 template<typename T>
 T &myList<T>::front() {
     if (empty()) {
@@ -240,6 +259,7 @@ T &myList<T>::front() {
     return head->data;
 }
 
+/* The last element in the list */
 template<typename T>
 T &myList<T>::back() {
     if (empty()) {
@@ -249,6 +269,8 @@ T &myList<T>::back() {
     return tail->data;
 }
 
+
+/* Insert element to the list in current position */
 template<typename T>
 void myList<T>::insert(iterator itr, const T &value) {
     if (empty()) {
@@ -276,6 +298,7 @@ void myList<T>::insert(iterator itr, const T &value) {
     }
 }
 
+/* Delete element from the list from the current position */
 template<typename T>
 void myList<T>::erase(iterator itr) {
     if (empty()) {
@@ -296,6 +319,7 @@ void myList<T>::erase(iterator itr) {
     }
 }
 
+/* Overload operator = */
 template<typename T>
 void myList<T>::operator=(const T &other) {
     if (head != other->head) {
@@ -305,6 +329,7 @@ void myList<T>::operator=(const T &other) {
     }
 }
 
+/* The exchange of content between two myList */
 template<typename T>
 void myList<T>::swap(myList &other) {
     if (other.head != head && other.tail != tail) {

@@ -1,5 +1,7 @@
 //
-// Created by alex on 28.03.16.
+// Created by abelokon on 28.03.16.
+// File: myVector.h
+// Author abelokon
 //
 
 #ifndef A5_COLLECTIONS_MYVECTOR_H
