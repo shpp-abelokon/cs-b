@@ -2,18 +2,30 @@
 #include <vector>
 #include <list>
 #include <stack>
+//#include <queue>
 #include "myVector.h"
 #include "myList.h"
 #include "myStack.h"
+#include "myQueue.h"
 
 #define space cout<<"------------------------"<<endl;
 #define DEBUG_myVector false
 #define DEBUG_myList false
-#define DEBUG_myStack true
+#define DEBUG_myStack false
+#define DEBUG_myQueue true
 using namespace std;
 
 int main() {
     cout << "Hello, World!" << endl;
+    if (DEBUG_myQueue) {
+        myQueue<int> a;
+        a.push(10);
+        a.push(20);
+        cout<<"a.front(): "<<a.front()<<endl;
+//
+//        queue<int> b;
+
+    }
     if (DEBUG_myStack) {
         cout << "Create a first 'a' stack and fill in {\"Java\",\"C++\"} " << endl;
         myStack<string> a;
