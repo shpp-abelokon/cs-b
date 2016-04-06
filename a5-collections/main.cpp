@@ -2,7 +2,7 @@
 #include <vector>
 #include <list>
 #include <stack>
-//#include <queue>
+#include <queue>
 #include "myVector.h"
 #include "myList.h"
 #include "myStack.h"
@@ -18,13 +18,44 @@ using namespace std;
 int main() {
     cout << "Hello, World!" << endl;
     if (DEBUG_myQueue) {
-        myQueue<int> a;
-        a.push(10);
-        a.push(20);
-        cout<<"a.front(): "<<a.front()<<endl;
-//
-//        queue<int> b;
-
+        cout << "Create a first 'a' queue and fill in {\"Java\",\"C++\"} " << endl;
+        myQueue<string> a;
+        a.push("Java");
+        a.push("C++");
+        cout << "myQueue a.size: " << a.size() << endl;
+        cout << "myQueue a.front(): " << a.front() << endl;
+        cout << "myQueue a.back(): " << a.back() << endl;
+        space
+        cout << "The called method a.push(\"Ruby\");" << endl;
+        a.push("Ruby");
+        cout << "myQueue a.size: " << a.size() << endl;
+        cout << "myQueue a.front(): " << a.front() << endl;
+        cout << "myQueue a.back(): " << a.back() << endl;
+        space
+        cout << "The called method a.pop();" << endl;
+        a.pop();
+        cout << "myQueue a.size: " << a.size() << endl;
+        cout << "myQueue a.front(): " << a.front() << endl;
+        cout << "myQueue a.back(): " << a.back() << endl;
+        space
+        cout << "Create a second 'b' queue and fill in {\"rshmelev\",\"abelokon\",\"shpp\"}" << endl;
+        myQueue<string> b;
+        b.push("rshmelev");
+        b.push("abelokon");
+        b.push("shpp");
+        cout << "myQueue b.size: " << b.size() << endl;
+        cout << "myQueue b.front(): " << b.front() << endl;
+        cout << "myQueue b.back(): " << b.back() << endl;
+        space
+        cout << "Assign the queue \"a=b\": " << endl;
+        a = b;
+        cout << "myQueue a.size: " << a.size() << endl;
+        cout << "myQueue a.front(): " << a.front() << endl;
+        cout << "myQueue a.back(): " << a.back() << endl;
+        space
+        cout << "The called method a.clear();" << endl;
+        a.clear();
+        cout << "The called method a.empty(): " << boolalpha << a.empty() << endl;
     }
     if (DEBUG_myStack) {
         cout << "Create a first 'a' stack and fill in {\"Java\",\"C++\"} " << endl;
@@ -49,9 +80,9 @@ int main() {
         space
         cout << "Create a second 'b' stack and fill in {\"rshmelev\",\"abelokon\",\"shpp\"}" << endl;
         myStack<string> b;
-        a.push("rshmelev");
-        a.push("abelokon");
-        a.push("shpp");
+        b.push("rshmelev");
+        b.push("abelokon");
+        b.push("shpp");
         cout << "Compare the stack \"a==b\": " << boolalpha << (a == b) << endl;
         cout << "Compare the stack \"a!=b\": " << boolalpha << (a != b) << endl;
         space
