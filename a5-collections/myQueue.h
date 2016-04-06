@@ -117,7 +117,7 @@ void myQueue<T>::operator=(myQueue<T> &other) {
         tail = head;
 
         for (int i = 0; i < other._size; ++i) {
-            if (i >= _size) {
+            if (i >= _size - 1) {
                 push(nodePtr->data);
                 nodePtr = nodePtr->next;
             } else {
