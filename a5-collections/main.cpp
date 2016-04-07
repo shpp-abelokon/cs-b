@@ -1,22 +1,33 @@
 #include <iostream>
-#include <vector>
-#include <list>
-#include <stack>
-#include <queue>
+#include <map>
 #include "myVector.h"
 #include "myList.h"
 #include "myStack.h"
 #include "myQueue.h"
+#include "myDeque.h"
 
 #define space cout<<"------------------------"<<endl;
 #define DEBUG_myVector false
 #define DEBUG_myList false
 #define DEBUG_myStack false
-#define DEBUG_myQueue true
+#define DEBUG_myQueue false
+#define DEBUG_myDeque true
 using namespace std;
 
 int main() {
     cout << "Hello, World!" << endl;
+    if (DEBUG_myDeque) {
+        myDeque<int> a;
+        a.push_back(10);
+        a.push_back(20);
+        cout << "a.size(): " << a.size() << endl;
+        cout << "a.capacity(): " << a.capacity() << endl;
+        cout << "a.front(): " << a.front() << endl;
+        cout << "a.back(): " << a.back() << endl;
+
+
+    }
+
     if (DEBUG_myQueue) {
         cout << "Create a first 'a' queue and fill in {\"Java\",\"C++\"} " << endl;
         myQueue<string> a;
