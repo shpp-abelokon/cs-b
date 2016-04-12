@@ -81,11 +81,7 @@ public:
 template<typename T>
 myVector<T>::myVector(size_t s) {
     vSize = s;
-    if (s != 0) {
-        maxSize = s;
-    } else {
-        maxSize = 2;
-    }
+    (s != 0) ? maxSize = s : maxSize = 2;
     vectorPtr = new T[maxSize];
 }
 

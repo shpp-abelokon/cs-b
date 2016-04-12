@@ -1,5 +1,4 @@
 #include <iostream>
-#include <map>
 #include "myVector.h"
 #include "myList.h"
 #include "myStack.h"
@@ -7,24 +6,42 @@
 #include "myDeque.h"
 
 #define space cout<<"------------------------"<<endl;
-#define DEBUG_myVector false
+#define DEBUG_myVector true
 #define DEBUG_myList false
 #define DEBUG_myStack false
 #define DEBUG_myQueue false
-#define DEBUG_myDeque true
+#define DEBUG_myDeque false
 using namespace std;
 
 int main() {
     cout << "Hello, World!" << endl;
     if (DEBUG_myDeque) {
-        myDeque<int> a;
-        a.push_back(10);
-        a.push_back(20);
+        cout << "Create a first 'a' Deque and fill in pish_bakc {\"Java\",\"C++\"} " << endl;
+        myDeque<string> a;
+        a.push_back("Java");
+        a.push_back("C++");
         cout << "a.size(): " << a.size() << endl;
-        cout << "a.capacity(): " << a.capacity() << endl;
-        cout << "a.front(): " << a.front() << endl;
-        cout << "a.back(): " << a.back() << endl;
-
+        cout << "head = a.front(): " << a.front() << endl;
+        cout << "tail = a.back(): " << a.back() << endl;
+        space
+        cout << "The called method a.push_front(\"Ruby\");" << endl;
+        a.push_front("Ruby");
+        cout << "a.size(): " << a.size() << endl;
+        cout << "head = a.front(): " << a.front() << endl;
+        cout << "tail = a.back(): " << a.back() << endl;
+        space
+        cout << "The called method a.pop_back();" << endl;
+        a.pop_back();
+        cout << "a.size(): " << a.size() << endl;
+        cout << "head = a.front(): " << a.front() << endl;
+        cout << "tail = a.back(): " << a.back() << endl;
+        space
+        cout << "The called method a.clear();" << endl;
+        a.clear();
+        cout << "The called method a.empty(): " << boolalpha << a.empty() << endl;
+        cout << "a.size(): " << a.size() << endl;
+        cout << "head = a.front(): " << a.front() << endl;
+        cout << "tail = a.back(): " << a.back() << endl;
 
     }
 

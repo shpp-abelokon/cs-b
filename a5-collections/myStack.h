@@ -58,6 +58,7 @@ myStack<T>::myStack(size_t size) {
 
 }
 
+/* Copy constructor */
 template<typename T>
 myStack<T>::myStack(const myStack<T> &other) {
     _top = other._top;
@@ -167,7 +168,7 @@ bool myStack<T>::operator==(const myStack &other) {
 /* Overload operator != */
 template<typename T>
 bool myStack<T>::operator!=(const myStack &other) {
-    return (stackPtr == other.stackPtr) ? false : (_top == other._top) ? false : equal(other);
+    return (stackPtr == other.stackPtr) ? false : (_top != other._top) ? true : !equal(other);
 }
 
 /* A comparison of two objects */
