@@ -1,116 +1,180 @@
 //
-// Created by alex on 22.02.16.
+// Created by alex on 18.04.16.
 //
 #include <iostream>
 #include <fstream>
+#include <list>
+#include <vector>
 #include "Node.h"
 #include "CompressionProgram.h"
 
-#define DEBUG false
 
-using namespace std;
+#define space cout<<"---------------------------------------------"<<endl;
+#define DEBUG true
 
-void CompressionProgram::compressFile(string *filename) {
 
-    /* Create a map of characters ranking */
-    map<char, int> mapChar = createMapSymbolsRating(filename);
+void CompressionProgram::compressFile(string &ptrF) {
 
-    /* Create a list of nodes pointing to the symbols in mapChar */
-    list<Node *> listNodesOfSymbolFrequencies =
-            createListOfFrequenciesOfSymbolsNodes(&mapChar);
+    /* Create a vector of characters ranking */
+    vector<int> symbolRating(256);
+    createSymbolsRating(ptrF, symbolRating);
+
+    /* Create a list of nodes pointing to the symbols in symbolRating */
+    list<Node *> listNodesOfSymbolFrequencies = createListOfFrequenciesOfSymbolsNodes(symbolRating);
 
     /* Create the root of the binary tree Huffman */
-    Node *root = createBinaryTreeHuffman(&listNodesOfSymbolFrequencies);
+    Node *root = createBinaryTreeHuffman(listNodesOfSymbolFrequencies);
 
     /* Create Table of symbols and their codes */
     vector<bool> code; // temporary vector to store codes
-    map<char, vector<bool> > table; // Table of symbols and their codes
+    vector<vector<bool> > table(256); // Table of symbols and their codes
     createTableOfEncodedSymbol(root, table, code);
+
 
     /* Debug */
     if (DEBUG) {
         printBinaryTreeHuffman(root, 0); // Output to the console a binary tree Huffman.
     }
-
-    //write in file our coded map - "table" and coded file, in char representation
-    string codefiles = *filename + ".huff";
-    createCompressedFile(codefiles, *filename, table);
+    string codefile = ptrF + ".huff";
+    createCompressedFile(codefile, ptrF, table, symbolRating);
     cout << "File compressed!" << endl;
+
 }
 
-map<char, int> CompressionProgram::createMapSymbolsRating(string *pString) {
+void CompressionProgram::decompressionFile(string &ptrF) {
+    string filename = renameF(ptrF);
+    ifstream iFile(ptrF.c_str(), ios::binary); // Open the file for reading
+    ofstream oFile(filename.c_str(), ios::binary); // Open the file for writing
 
-    char n;
-    ifstream str((*pString).c_str(), ios::binary); // Open the file for reading
-    map<char, int> mapChar;
+    /* Create a vector of characters ranking */
+    vector<int> symbolRating(256);
 
-    /* We push symbol in Map and consider it a rating */
-    while (str.get(n)) {
-        mapChar[n]++; // Put in a Map symbol and calculate its rating
+    int tableSize;
+    iFile.read((char *) &tableSize, sizeof(tableSize));
+
+    for (int i = 0; i < tableSize; i++) {
+        iFile.read((char *) &symbolRating[i], sizeof(symbolRating[i]));
     }
-    str.close(); // Close the file that is read
+    list<Node *> listNodesOfSymbolFrequencies = createListOfFrequenciesOfSymbolsNodes(symbolRating);
+    /* Create the root of the binary tree Huffman */
+    Node *root = createBinaryTreeHuffman(listNodesOfSymbolFrequencies);
+    Node *p = root;
+    unsigned char byte;
+    int count = 0;
+    byte = iFile.get();
 
-    /* Debug */
-    if (DEBUG) {
-        map<char, int>::iterator itr;
-        for (itr = mapChar.begin(); itr != mapChar.end(); itr++) { // The output to the console, the rating symbol
-            cout << itr->first << " - " << itr->second << endl;
+    while (!iFile.eof()) {
+
+        bool b = byte & (1 << (7 - count));
+        if (b) {
+            p = p->right;
+        } else {
+            p = p->left;
+        }
+        if (p->symbol) {
+            unsigned char k = p->symbol;
+            oFile.put(k);
+            p = root;
+        }
+        count++;
+        if (count == 8) {
+            count = 0;
+            byte = iFile.get();
         }
     }
-    return mapChar;
+
+    iFile.close();
+    oFile.close();
 }
 
-list<Node *> CompressionProgram::createListOfFrequenciesOfSymbolsNodes(map<char, int> *pMap) {
+/* Create a vector of characters ranking  */
+void CompressionProgram::createSymbolsRating(string &ptrF, vector<int> &symbolRating) {
+    ifstream file(ptrF.c_str(), ios::binary);
+    while (!file.eof()) {
+        unsigned char ch = file.get();
+        symbolRating[ch]++;
+        if (DEBUG) {
+            cout << ch;
+        }
+    }
+    file.close();
+    if (DEBUG) {
+        space;
+        for (int i = 0; i < symbolRating.size(); ++i) {
+            char a = i;
+            cout << " " << symbolRating[i] << "-" << a << endl;
+        }
+    }
+}
+
+/* Create a list of nodes pointing to the symbols in vector */
+list<Node *> CompressionProgram::createListOfFrequenciesOfSymbolsNodes(vector<int> &symbolRating) {
 
     list<Node *> listNode;
-    map<char, int>::iterator itr;
 
-    for (itr = pMap->begin(); itr != pMap->end(); ++itr) {
-        Node *p = new Node;
-        p->symbol = itr->first; // Is placed into a symbol of nodes pMap
-        p->value = itr->second; // Is placed into a value of nodes pMap
-        p->left = NULL;
-        p->right = NULL;
-        listNode.push_back(p); // Put node in the list of Nods
+    for (int i(0); i < symbolRating.size(); ++i) {
+        Node *n = new Node;
+        n->symbol = char(i);
+        n->value = symbolRating[i];
+        n->left = NULL;
+        n->right = NULL;
+        listNode.push_back(n);
+
+    }
+    if (DEBUG) {
+        list<Node *>::iterator itr2 = listNode.begin();
+        list<Node *>::iterator itr2_end = listNode.end();
+        for (; itr2 != itr2_end; ++itr2) {
+            Node *n = *itr2;
+            cout << " " << n->symbol << "-" << n->value;
+        }
+        cout << endl;
     }
     return listNode;
 }
 
-Node *CompressionProgram::createBinaryTreeHuffman(list<Node *> *listOfNodes) {
-    while (listOfNodes->size() != 1) {
-
-        listOfNodes->sort(Node::MyCompare()); // Sort the list of nodes, restart operators - MyCompare
+/*
+ *  Create the root of the binary tree Huffman
+ *  @return - Node* root
+ */
+Node *CompressionProgram::createBinaryTreeHuffman(list<Node *> &ptrList) {
+    while (ptrList.size() != 1) {
+        ptrList.sort(Node::MyCompare()); // Sort the list of nodes, restart operators - MyCompare
 
         /* We get the first two Node sorted list */
-        Node *sonL = listOfNodes->front();
-        listOfNodes->pop_front();
-        Node *sonR = listOfNodes->front();
-        listOfNodes->pop_front();
+        Node *sonL = ptrList.front();
+        ptrList.pop_front();
+        Node *sonR = ptrList.front();
+        ptrList.pop_front();
 
         Node *parent = new Node(sonL, sonR); // Create a parent Node of the two youngest Nodes
-        listOfNodes->push_back(parent);     // We put in the list of the parent Node
+        ptrList.push_back(parent); // We put in the list of the parent Node
     }
-    return listOfNodes->front();
+    if (DEBUG) {
+        space
+        cout << "root: " << ptrList.front()->symbol << " - " << ptrList.front()->value << endl;
+    }
+    return ptrList.front();
 }
 
-void CompressionProgram::createTableOfEncodedSymbol(Node *root, map<char, vector<bool> > &table,
-                                                    vector<bool> &code) {
+/* Create table of encoded symbol */
+void CompressionProgram::createTableOfEncodedSymbol(Node *root, vector<vector<bool> > &ptrTable, vector<bool> &code) {
     if (root->left != NULL) {
         code.push_back(0);
-        createTableOfEncodedSymbol(root->left, table, code);
+        createTableOfEncodedSymbol(root->left, ptrTable, code);
     }
     if (root->right != NULL) {
         code.push_back(1);
-        createTableOfEncodedSymbol(root->right, table, code);
+        createTableOfEncodedSymbol(root->right, ptrTable, code);
     }
     if (root->symbol) {
-        table[root->symbol] = code; // put the symbol in MAP and its code
+        ptrTable[int(root->symbol)] = code; // put the symbol in vector and its code
     }
-    code.pop_back(); // remove the last element of the vector and return to the parent Node
-
+    code.pop_back(); // remove the last element of the deque and return to the parent Node
 }
 
-void CompressionProgram::printBinaryTreeHuffman(Node *root, unsigned s = 0) {
+/* print in console Binary Tree Huffman */
+void CompressionProgram::printBinaryTreeHuffman(Node *root, size_t s = 0) {
     if (root != NULL) {
         printBinaryTreeHuffman(root->left, s + 3);
         for (unsigned i = 0; i < s; i++) { //
@@ -125,173 +189,43 @@ void CompressionProgram::printBinaryTreeHuffman(Node *root, unsigned s = 0) {
     }
 }
 
-void CompressionProgram::createCompressedFile(string &codedFile, string filename,
-                                              map<char, vector<bool> > &table) {
+void CompressionProgram::createCompressedFile(string codefile, string &ptrF, vector<vector<bool> > table,
+                                              vector<int> symbolRating) {
+    ifstream iFile(ptrF.c_str(), ios::binary); // Open the file for reading
 
-    /* The encoded contents of the file as a reference to the symbol codes*/
-    vector<bool> *codedContents = createAnEncodedFileContent(filename, table);
-    int sizeInBitsEncodedContent = CompressionProgram::sizeInBitsEncodedContent;
-    char sizeOfTableMap = table.size();
-    ofstream fileCompressed(codedFile.c_str(), ios::binary); // Open the file for writing
-    char buf = 0;
-    /* Write the symbol table and the code in a compressed file */
-    fileCompressed.put(sizeOfTableMap); // write to the file size of the table
-    /*Debug*/
-    if (DEBUG) {
-        cout << "Write to file size of the table :" << (int) sizeOfTableMap << endl;
-    }
-    /* Write to file all of the characters and the codes of the table in turn. */
-    map<char, vector<bool> >::iterator itr;
-    for (itr = table.begin(); itr != table.end(); ++itr) {
-        char symbol = itr->first;
-        /* Debug */
-        if (DEBUG) {
-            cout << "Write to file symbol [ " << symbol;
-        }
-        fileCompressed.put(symbol); // write a symbol in the file
-
-        vector<bool> tmp = itr->second;
-        /* Debug */
-        if (DEBUG) {
-            cout << " ] size [ " << tmp.size() << " ] code: ";
-        }
-        fileCompressed.put((char) tmp.size()); // write size of tmp vector
-
-        /* Debug */
-        if (DEBUG) {
-            for (int i = 0; i < tmp.size(); ++i) {
-                cout << tmp[i];
-            }
-            cout << endl;
-        }
-        int vecbool = 0;
-        for (int j = 0; j < tmp.size(); ++j) {
-            vecbool = (vecbool << 1) | tmp[j]; // pushes the symbol code in an int, making the bitwise shift
-        }
-        fileCompressed.write((char *) &vecbool, sizeof(vecbool)); // write a symbol code in the file size of 4 bytes
-    }
-
-    /* Write to file length code the content in a byte 4 */
-    fileCompressed.write((char *) &sizeInBitsEncodedContent, sizeof(sizeInBitsEncodedContent));
-
-    /* Write in file coded content */
-    int count = 0;
-    buf = 0;
-    for (int i = 0; i < codedContents->size(); i++) {
-        buf = buf | (codedContents->at(i)) << (7 - count);
-        count++;
-        if (count == 8) {
-            count = 0;
-            fileCompressed << buf; // Write 1 byte coded content
-            buf = 0;
-        }
-    }
-    fileCompressed.close(); // Close file
-}
-
-vector<bool> *CompressionProgram::createAnEncodedFileContent(string filename, map<char, vector<bool> > &table) {
-
-    /* The encoded contents of the file as a reference to the symbol codes */
-    vector<bool> *codedContents = new vector<bool>();
-    ifstream str(filename.c_str(), ios::binary); // Open the file for reading
+    ofstream oFile(codefile.c_str(), ios::binary); // Open the file for writing
     setlocale(LC_ALL, "Russian"); // understand the Cyrillic
-    char ch;
 
-    while (str.get(ch)) {
+    int tableSize = (int) symbolRating.size();
+    oFile.write((char *) &tableSize, sizeof(tableSize));
+
+    for (int j = 0; j < tableSize; ++j) {
+        oFile.write((char *) &symbolRating[j], sizeof(symbolRating[j]));
+    }
+    int count = 0;
+    unsigned char buf;
+
+    while (!iFile.eof()) {
+        unsigned char ch = iFile.get();
         vector<bool> tmp = table[ch]; // Put in a vector is considered a symbol code
         for (int i = 0; i < tmp.size(); i++) {
-            codedContents->push_back(tmp[i]);
-        }
-    }
-    str.close(); // Close the file that is read
-    CompressionProgram::sizeInBitsEncodedContent = (int) codedContents->size();
-    /*Debug*/
-    if (DEBUG) {
-        cout << "Size in bits encoded content: " << codedContents->size() << endl;
-    }
-
-    /* Check whether the last byte is filled with bits? */
-    if (codedContents->size() % 8 != 0) {
-        while ((codedContents->size()) % 8 != 0) {
-            codedContents->push_back(NULL); // Fill byte Null bits.
-            /*Debug*/
-            if (DEBUG) {
-                cout << "Size in bits encoded content: " << codedContents->size() << endl;
+            buf = buf | tmp[i] << (7 - count);
+            count++;
+            if (count == 8) {
+                count = 0;
+                oFile << buf;
+                buf = 0;
             }
         }
-        /*Debug*/
-        if (DEBUG) {
-            cout << "Size in bytes of the encoded content: " << "[ " << codedContents->size() / 8 << " ]" << endl;
-        }
     }
-    return codedContents;
+    oFile.close(); // Close the file that is writing
+    iFile.close(); // Close the file that is read
 }
 
-void CompressionProgram::decompressionFile(string *fileHuff) {
-    ifstream fileCompressed(*fileHuff, ios::binary); // Open the file for reading
-
-    string fileNew = renamefile(*fileHuff);
-    ofstream fileDecompressed(fileNew, ios::binary); // Open the file for writing
-
-    char tabsize = 0;
-    fileCompressed.get(tabsize); // read the size of the symbol table
-
-    /* Fill Map characters and their codes */
-    map<vector<bool>, char> tab;
-    for (int i = 0; i < tabsize; i++) {
-        char symbol;
-        fileCompressed.get(symbol); // reading a symbol file
-        char size;
-        fileCompressed.get(size); // reading from the file size of the code bits
-        int num = 0;
-        fileCompressed.read((char *) &num, sizeof(int)); // reading a file with 4 bytes of code symbol
-        vector<bool> keyCode;
-        num = num << (sizeof(num) * 8 - size);
-        for (char u = 0; u < size; u++) {
-            keyCode.push_back(num < 0); // put the last bit in the vector
-            num = num << 1; // to shift by 1 bit
-        }
-        tab[keyCode] = symbol; // put in the Map symbol and its code
+string CompressionProgram::renameF(string &basic_string) {
+    string tmp;
+    for (int i = 0; i < basic_string.size() - 5; ++i) {
+        tmp += basic_string[i];
     }
-
-    /* Read the length of the coded content */
-    int sizeInBitsEncodedContent = 0;
-    fileCompressed.read((char *) &sizeInBitsEncodedContent, sizeof(sizeInBitsEncodedContent));
-
-    /* Read the content code */
-    vector<bool> codedContents;
-    int counter = 0;
-    int counterForByte = 0;
-    while (!fileCompressed.eof()) {
-        char ch = 0;
-        fileCompressed.get(ch);// Read the 1 byte code
-        while (counterForByte != 8) {
-            codedContents.push_back(ch < 0); // put 1 bit code in the vector
-            ch = ch << 1; // shift by 1 bit
-            counterForByte++;
-        }
-        counterForByte = 0;
-        counter = counter + 8;
-    }
-    vector<bool> res;
-    for (int i = 0; i < (codedContents.size() - (codedContents.size() - sizeInBitsEncodedContent)); i++) {
-        res.push_back(codedContents[i]);
-        if (tab[res]) {
-            fileDecompressed << tab[res];
-            res.clear();
-        }
-    }
-    cout << "File decoded!" << endl;
-    fileCompressed.close(); // Close file
-    fileDecompressed.close(); // Close file
-
-}
-
-string CompressionProgram::renamefile(string pString) {
-    string temp;
-    for (int i = 0; i < pString.length() - 4; ++i) {
-        temp += pString[i];
-    }
-    temp += "copy";
-    return temp;
+    return tmp;
 }

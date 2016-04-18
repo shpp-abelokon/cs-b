@@ -1,14 +1,15 @@
 //
-// Created by alex on 22.02.16.
+// Created by alex on 18.04.16.
 //
 
-#ifndef A3_HUFFMAN_NODE_H
-#define A3_HUFFMAN_NODE_H
+#ifndef A4_HUFF_NODE_H
+#define A4_HUFF_NODE_H
+
 
 class Node {
 public:
     int value;
-    char symbol;
+    unsigned char symbol;
     Node *left, *right;
 
     Node();
@@ -22,4 +23,5 @@ public:
     };
 };
 
-#endif //A3_HUFFMAN_NODE_H
+
+#endif //A4_HUFF_NODE_H

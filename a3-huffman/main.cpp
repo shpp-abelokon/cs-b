@@ -1,12 +1,10 @@
-//
-// Created by alex on 22.02.16.
-//
 #include <iostream>
 #include "CompressionProgram.h"
 
-#define CODED_FILE "test2.txt"
-#define DECODED_FILE "test2.txt.huff"
-#define DEBUG false
+#define DEBUG true
+
+#define CODED_FILE "test.txt"
+#define DECODED_FILE "test.txt.huff"
 
 using namespace std;
 
@@ -29,7 +27,7 @@ int main() {
                 getline(cin, filename);
             }
             CompressionProgram *file = new CompressionProgram();
-            file->compressFile(&filename);
+            file->compressFile(filename);
             delete (file);
         } else if (task == "2") {
             if (DEBUG) {
@@ -39,7 +37,7 @@ int main() {
                 getline(cin, filename);
             }
             CompressionProgram *file = new CompressionProgram();
-            file->decompressionFile(&filename);
+            file->decompressionFile(filename);
             delete (file);
         } else {
             cout << "Unknown commando please try again!" << endl;

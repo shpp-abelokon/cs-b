@@ -1,11 +1,12 @@
 //
-// Created by alex on 22.02.16.
+// Created by alex on 18.04.16.
 //
 
-#ifndef A3_HUFFMAN_COMPRESSIONFILE_H
-#define A3_HUFFMAN_COMPRESSIONFILE_H
+#ifndef A4_HUFF_COMPRESSIONPROGRAM_H
+#define A4_HUFF_COMPRESSIONPROGRAM_H
 
-#include <map>
+
+#include <iostream>
 #include <list>
 #include <vector>
 #include "Node.h"
@@ -14,37 +15,29 @@ using namespace std;
 
 class CompressionProgram {
 
-public:
-
-    int sizeInBitsEncodedContent = 0;
-
-    void compressFile(string *filename);
-
-    void decompressionFile(string *fileHuff);
-
-
-private:
-    map<char, int> createMapSymbolsRating(string *pString);
-
-    list<Node *> createListOfFrequenciesOfSymbolsNodes(map<char, int> *pMap);
-
-    Node *createBinaryTreeHuffman(list<Node *> *listOfNodes);
-
-    void createTableOfEncodedSymbol(Node *root, map<char, vector<bool> > &table,
-                                    vector<bool> &code);
-
-    void printBinaryTreeHuffman(Node *root, unsigned s);
-
-    void createCompressedFile(string &codedFile, string filename, map<char, vector<bool> > &table);
-
-    vector<bool> *createAnEncodedFileContent(string filename, map<char, vector<bool> > &table);
-
-    string renamefile(string pString);
 
 public:
-    ~CompressionProgram() {
-    }
+    CompressionProgram(){};
+
+    ~CompressionProgram(){};
+
+    void compressFile(string &ptrF);
+
+    void decompressionFile(string &ptrF);
+
+    void createSymbolsRating(string &ptrF, vector<int> &symbolRating);
+
+    list<Node *> createListOfFrequenciesOfSymbolsNodes(vector<int> &symbolRating);
+
+    Node *createBinaryTreeHuffman(list<Node *> &ptrList);
+
+    void createTableOfEncodedSymbol(Node *root, vector<vector<bool> > &ptrTable, vector<bool> &code);
+
+    void printBinaryTreeHuffman(Node *pNode, size_t s);
+
+    void createCompressedFile(string codefile, string &ptrF, vector<vector<bool> > table, vector<int> symbolRating);
+
+    string renameF(string &basic_string);
 };
 
-
-#endif //A3_HUFFMAN_COMPRESSIONFILE_H
+#endif //A4_HUFF_COMPRESSIONPROGRAM_H
