@@ -64,8 +64,6 @@ public:
         std::string a, b, c;
         std::cout << "Memory clear..." << std::endl;
     };
-
-
 };
 
 

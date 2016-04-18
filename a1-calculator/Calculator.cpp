@@ -1,10 +1,17 @@
 //
-// Created by Alex Belokon on 08.02.16.
+// Created by abelokon on 08.02.16.
+// File: Calculator.cpp
+// Author abelokon
 //
+
 #include <iostream>
 #include <cmath>
 #include "Calculator.h"
 
+/*
+ *  Check validity of the input string
+ *  @return bool
+ */
 bool Calculator::checkingString(std::string *pString) {
     clearSpaces(pString);
     transform_str(pString, tolower);
@@ -15,6 +22,10 @@ bool Calculator::checkingString(std::string *pString) {
     return true;
 }
 
+/*
+ *  The count of the incoming expression
+ *  @return double result - the result of the expression
+ */
 double Calculator::calculation(std::string *pString) {
     double result;
     transformUnaryOperators(pString);
@@ -24,6 +35,11 @@ double Calculator::calculation(std::string *pString) {
     return result;
 }
 
+/*
+ *  Verification of the mathematical expression for invalid characters and character combinations,
+ *  and the right number of parentheses.
+ *  @return bool
+ */
 bool Calculator::checkValidity(std::string *pString) {
     double l = 0, r = 0;
     char ch, ch2;
@@ -74,6 +90,9 @@ bool Calculator::checkValidity(std::string *pString) {
     return l - r != 0;
 }
 
+/*
+ *  Remove gaps in mathematical formula
+ */
 void Calculator::clearSpaces(std::string *pString) {
     for (unsigned int i = 0; i < (*pString).length(); ++i) {
         if ((*pString)[i] == ' ') {
@@ -83,6 +102,9 @@ void Calculator::clearSpaces(std::string *pString) {
     }
 }
 
+/*
+ *  Transform unary operators in expressions
+ */
 void Calculator::transformUnaryOperators(std::string *pString) {
     correctRecordMinusAndMultiplication(pString);
     isUnary = false;
@@ -104,6 +126,9 @@ void Calculator::transformUnaryOperators(std::string *pString) {
     }
 }
 
+/*
+ *  Convert record to correct the minuses and implicit multiplication
+ */
 void Calculator::correctRecordMinusAndMultiplication(std::string *pString) {
     std::string tempString = *pString;
     *pString = "";
@@ -132,6 +157,9 @@ void Calculator::correctRecordMinusAndMultiplication(std::string *pString) {
     }
 }
 
+/*
+ *  Produce a calculation expression using Postfix notation
+ */
 void Calculator::postfixNotation(std::string *pString) {
     for (unsigned int i = 0; i < (*pString).length(); ++i) {
         char ch = (*pString)[i];
@@ -174,6 +202,9 @@ void Calculator::postfixNotation(std::string *pString) {
     }
 }
 
+/*
+ *  Perform mathematical operations: +, -, *, /, ^, f
+ */
 void Calculator::process_op(std::vector<double> &st, char op) {
     if (op == 'f') {
         process_fn(st, fn);
@@ -204,6 +235,9 @@ void Calculator::process_op(std::vector<double> &st, char op) {
     }
 }
 
+/*
+ *  Performed mathematical functions: sin, cos, tan, log, sqrt, "!" and variables of the equation: a,b,c
+ */
 void Calculator::process_fn(std::vector<double> &st, std::vector<std::string> &fn) {
     std::string f = fn.back();
     if (f == "sin") {
@@ -260,6 +294,9 @@ void Calculator::process_fn(std::vector<double> &st, std::vector<std::string> &f
     }
 }
 
+/* Performed mathematical functions  - factorial
+ * @return double result -  factorial
+ */
 double Calculator::factorial(double operand) {
     double result = 1;
     for (int i = 1; i <= std::abs(operand); i++) {
@@ -268,31 +305,38 @@ double Calculator::factorial(double operand) {
     return operand < 0 ? -result : result;
 }
 
+/* Check the numbers from to 9 including the symbol "." */
 bool Calculator::isNumber(char ch) {
     return ((ch >= '0') && (ch <= '9')) || (ch == '.');
 }
 
+/* Check for operators: +, -, *, /, ^, f  */
 bool Calculator::isOperator(char ch) {
     return ch == '+' || ch == '-' || ch == '*' || ch == '/' || ch == '^' || ch == 'f';
 }
 
+/* Check for unary operators: + and -  */
 bool Calculator::isUnaryOperator(char &ch) {
     return ch == '+' || ch == '-';
 }
 
+/* The priorities of operators */
 int Calculator::priority(char op) {
     return op == '+' || op == '-' ? 1 : op == '*' || op == '/' ? 2 : op == '^' || op == 'f' ? 3 : -1;
 }
 
+/* Check for characters */
 bool Calculator::isLetter(char ch) {
     return ((ch >= 97 && ch <= 122) || ch == '!');
 }
 
+/* Check functions */
 bool Calculator::isFunction(std::string func) {
     return func == "sqrt" || func == "sin" || func == "cos" || func == "tan" || func == "log" || func == "!" ||
            func == "a" || func == "b" || func == "c";
 }
 
+/* Converts all letters in lowercase letters */
 void Calculator::transform_str(std::string *pString, int (*tolower)(int)) {
     for (int i = 0; i < (*pString).length(); ++i) {
         char res = (*pString)[i];
