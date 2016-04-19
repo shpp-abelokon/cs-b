@@ -1,12 +1,12 @@
 //
 // Created by alex on 18.04.16.
 //
+
 #include <iostream>
 #include <fstream>
 #include <list>
 #include <vector>
 #include "Node.h"
-#include "myList.h"
 #include "CompressionProgram.h"
 
 
@@ -49,77 +49,62 @@ void CompressionProgram::decompressionFile(string &ptrF) {
 
     /* Create a vector of characters ranking */
     vector<int> symbolRating(256);
-    if (iFile.is_open()) {
-        if (oFile.is_open()) {
-            int tableSize;
-            iFile.read((char *) &tableSize, sizeof(tableSize));
 
-            for (int i = 0; i < tableSize; i++) {
-                iFile.read((char *) &symbolRating[i], sizeof(symbolRating[i]));
-            }
-            list<Node *> listNodesOfSymbolFrequencies = createListOfFrequenciesOfSymbolsNodes(symbolRating);
-            /* Create the root of the binary tree Huffman */
-            Node *root = createBinaryTreeHuffman(listNodesOfSymbolFrequencies);
-            Node *p = root;
-            unsigned char byte;
-            int count = 0;
-            byte = iFile.get();
+    int tableSize;
+    iFile.read((char *) &tableSize, sizeof(tableSize));
 
-            while (!iFile.eof()) {
+    for (int i = 0; i < tableSize; i++) {
+        iFile.read((char *) &symbolRating[i], sizeof(symbolRating[i]));
+    }
+    list<Node *> listNodesOfSymbolFrequencies = createListOfFrequenciesOfSymbolsNodes(symbolRating);
+    /* Create the root of the binary tree Huffman */
+    Node *root = createBinaryTreeHuffman(listNodesOfSymbolFrequencies);
+    Node *p = root;
+    unsigned char byte;
+    int count = 0;
+    byte = iFile.get();
 
-                bool b = byte & (1 << (7 - count));
-                if (b) {
-                    p = p->right;
-                } else {
-                    p = p->left;
-                }
-                if (p->symbol) {
-                    unsigned char k = p->symbol;
-                    oFile.put(k);
-                    p = root;
-                }
-                count++;
-                if (count == 8) {
-                    count = 0;
-                    byte = iFile.get();
-                }
-            }
-            oFile.close();
+    while (!iFile.eof()) {
+
+        bool b = byte & (1 << (7 - count));
+        if (b) {
+            p = p->right;
         } else {
-            cerr << "Error [open file] " << filename << " can not be opened";
-            exit(0);
+            p = p->left;
         }
-        iFile.close();
-    } else {
-        cerr << "Error [open file] " << ptrF << " can not be opened";
-        exit(0);
+        if (p->symbol) {
+            unsigned char k = p->symbol;
+            oFile.put(k);
+            p = root;
+        }
+        count++;
+        if (count == 8) {
+            count = 0;
+            byte = iFile.get();
+        }
     }
 
-
+    iFile.close();
+    oFile.close();
 }
 
 /* Create a vector of characters ranking  */
 void CompressionProgram::createSymbolsRating(string &ptrF, vector<int> &symbolRating) {
-    ifstream iFile(ptrF.c_str(), ios::binary);
-    if (iFile.is_open()) {
-        while (!iFile.eof()) {
-            unsigned char ch = iFile.get();
-            symbolRating[ch]++;
-            if (DEBUG) {
-                cout << ch;
-            }
-        }
-        iFile.close();
+    ifstream file(ptrF.c_str(), ios::binary);
+    while (!file.eof()) {
+        unsigned char ch = file.get();
+        symbolRating[ch]++;
         if (DEBUG) {
-            space;
-            for (int i = 0; i < symbolRating.size(); ++i) {
-                char a = i;
-                cout << " " << symbolRating[i] << "-" << a << endl;
-            }
+            cout << ch;
         }
-    } else {
-        cerr << "Error [open file] " << ptrF << " can not be opened";
-        exit(0);
+    }
+    file.close();
+    if (DEBUG) {
+        space;
+        for (int i = 0; i < symbolRating.size(); ++i) {
+            char a = i;
+            cout << " " << symbolRating[i] << "-" << a << endl;
+        }
     }
 }
 
@@ -189,7 +174,7 @@ void CompressionProgram::createTableOfEncodedSymbol(Node *root, vector<vector<bo
     code.pop_back(); // remove the last element of the deque and return to the parent Node
 }
 
-/* Print in console Binary Tree Huffman */
+/* print in console Binary Tree Huffman */
 void CompressionProgram::printBinaryTreeHuffman(Node *root, size_t s = 0) {
     if (root != NULL) {
         printBinaryTreeHuffman(root->left, s + 3);
@@ -205,10 +190,6 @@ void CompressionProgram::printBinaryTreeHuffman(Node *root, size_t s = 0) {
     }
 }
 
-/*
- *  Create a compressed file with the extension *.huff.
- *  Open the file and want to compress the read bytes are written to compressing corresponding code.
- */
 void CompressionProgram::createCompressedFile(string codefile, string &ptrF, vector<vector<bool> > table,
                                               vector<int> symbolRating) {
     ifstream iFile(ptrF.c_str(), ios::binary); // Open the file for reading
@@ -216,47 +197,32 @@ void CompressionProgram::createCompressedFile(string codefile, string &ptrF, vec
     ofstream oFile(codefile.c_str(), ios::binary); // Open the file for writing
     setlocale(LC_ALL, "Russian"); // understand the Cyrillic
 
-    if (oFile.is_open()) {
-        int tableSize = (int) symbolRating.size();
-        oFile.write((char *) &tableSize, sizeof(tableSize));
+    int tableSize = (int) symbolRating.size();
+    oFile.write((char *) &tableSize, sizeof(tableSize));
 
-        for (int j = 0; j < tableSize; ++j) {
-            oFile.write((char *) &symbolRating[j], sizeof(symbolRating[j]));
-        }
-        oFile.close(); // Close the file that is writing
-    } else {
-        cerr << "Error [open file] " << codefile << " can not be opened";
-        exit(0);
+    for (int j = 0; j < tableSize; ++j) {
+        oFile.write((char *) &symbolRating[j], sizeof(symbolRating[j]));
     }
+    int count = 0;
+    unsigned char buf;
 
-    if (iFile.is_open()) {
-        int count = 0;
-        unsigned char buf;
-
-        while (!iFile.eof()) {
-            unsigned char ch = iFile.get();
-            vector<bool> tmp = table[ch]; // Put in a vector is considered a symbol code
-            for (int i = 0; i < tmp.size(); i++) {
-                buf = buf | tmp[i] << (7 - count);
-                count++;
-                if (count == 8) {
-                    count = 0;
-                    oFile << buf;
-                    buf = 0;
-                }
+    while (!iFile.eof()) {
+        unsigned char ch = iFile.get();
+        vector<bool> tmp = table[ch]; // Put in a vector is considered a symbol code
+        for (int i = 0; i < tmp.size(); i++) {
+            buf = buf | tmp[i] << (7 - count);
+            count++;
+            if (count == 8) {
+                count = 0;
+                oFile << buf;
+                buf = 0;
             }
         }
-        iFile.close(); // Close the file that is read
-    } else {
-        cerr << "Error [open file] " << ptrF << " can not be opened";
-        exit(0);
     }
-
+    oFile.close(); // Close the file that is writing
+    iFile.close(); // Close the file that is read
 }
 
-/*
- *  Create a new file name, adding the extension *.huff
- */
 string CompressionProgram::renameF(string &basic_string) {
     string tmp;
     for (int i = 0; i < basic_string.size() - 5; ++i) {

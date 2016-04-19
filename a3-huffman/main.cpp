@@ -1,10 +1,10 @@
 #include <iostream>
 #include "CompressionProgram.h"
 
-#define DEBUG true
+#define DEBUG false
 
-#define CODED_FILE "test.txt"
-#define DECODED_FILE "test.txt.huff"
+#define CODED_FILE "/home/alex/ClionProjects/cs-b/a3-huffman/test3.txt"
+#define DECODED_FILE "/home/alex/ClionProjects/cs-b/a3-huffman/test3.txt.huff"
 
 using namespace std;
 
