@@ -5,8 +5,9 @@
 #include<QtGui/QImage>
 #include<QtGui/QColor>
 #include<iostream>
-#include<vector>
+#include"myVector.h"
 #include<queue>
+#include<vector>
 
 #define DEBUG true
 
