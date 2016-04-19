@@ -5,7 +5,7 @@
 #ifndef A1_CALCULATOR_CALCULATOR_H
 #define A1_CALCULATOR_CALCULATOR_H
 
-#include <vector>
+#include "myVector.h"
 
 class Calculator {
 public:
@@ -33,13 +33,13 @@ private:
 
     void postfixNotation(std::string *pString);
 
-    void process_op(std::vector<double> &st, char op);
+    void process_op(myVector<double> &st, char op);
 
     int priority(char op);
 
-    std::vector<double> st;
-    std::vector<std::string> fn;
-    std::vector<char> op;
+    myVector<double> st;
+    myVector<std::string> fn;
+    myVector<char> op;
     std::string number;
     std::string func;
     std::string a, b, c;
@@ -50,19 +50,19 @@ private:
 
     bool isFunction(std::string func);
 
-    void process_fn(std::vector<double> &st, std::vector<std::string> &fn);
+    void process_fn(myVector<double> &st, myVector<std::string> &fn);
 
     double factorial(double operand);
 
 public:
     ~Calculator() {
-        std::vector<double> st;
-        std::vector<char> op;
-        std::vector<std::string> fn;
-        std::string number;
-        std::string func;
-        std::string a, b, c;
-        std::cout << "Memory clear..." << std::endl;
+            myVector<double> st;
+            myVector<char> op;
+            myVector<std::string> fn;
+            std::string number;
+            std::string func;
+            std::string a, b, c;
+            std::cout << "Memory clear..." << std::endl;
     };
 };
 

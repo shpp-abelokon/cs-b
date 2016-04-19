@@ -4,7 +4,7 @@
 #include <iostream>
 #include "Calculator.h"
 #include "UnitTest.h"
-#define DEBUG false
+#define DEBUG true
 
 int main() {
     std::cout << "    ---- Welcome to the calculator C++!!! ----" << std::endl;

@@ -205,7 +205,7 @@ void Calculator::postfixNotation(std::string *pString) {
 /*
  *  Perform mathematical operations: +, -, *, /, ^, f
  */
-void Calculator::process_op(std::vector<double> &st, char op) {
+void Calculator::process_op(myVector<double> &st, char op) {
     if (op == 'f') {
         process_fn(st, fn);
     } else {
@@ -238,7 +238,7 @@ void Calculator::process_op(std::vector<double> &st, char op) {
 /*
  *  Performed mathematical functions: sin, cos, tan, log, sqrt, "!" and variables of the equation: a,b,c
  */
-void Calculator::process_fn(std::vector<double> &st, std::vector<std::string> &fn) {
+void Calculator::process_fn(myVector<double> &st, myVector<std::string> &fn) {
     std::string f = fn.back();
     if (f == "sin") {
         double n = sin(st.back());
