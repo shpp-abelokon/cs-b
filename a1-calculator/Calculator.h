@@ -7,6 +7,7 @@
 
 #include "myVector.h"
 
+
 class Calculator {
 public:
 

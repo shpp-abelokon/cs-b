@@ -10,7 +10,7 @@
 template<class T>
 class myVector {
 private:
-    T *vectorPtr; // reference to the region of allocated memory for the vector
+    T *vectorPtr; // reference to the region of allocated memory for the vector.
     size_t maxSize; // the current size of the vector
     size_t vSize; // the number of elements in vector, 0 is the vector is empty
 

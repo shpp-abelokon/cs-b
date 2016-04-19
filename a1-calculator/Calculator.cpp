@@ -9,7 +9,7 @@
 #include "Calculator.h"
 
 /*
- *  Check validity of the input string
+ *  Check validity of the input string.
  *  @return bool
  */
 bool Calculator::checkingString(std::string *pString) {
