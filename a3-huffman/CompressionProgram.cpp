@@ -6,6 +6,7 @@
 #include <list>
 #include <vector>
 #include "Node.h"
+#include "myList.h"
 #include "CompressionProgram.h"
 
 
