@@ -176,7 +176,7 @@ void Calculator::postfixNotation(std::string *pString) {
         } else if (isNumber(ch)) {
             number += ch;
             if (i == (*pString).length() - 1) {
-                st.push_back(std::atoi(number.c_str()));
+                st.push_back(std::atof(number.c_str()));
                 number = "";
             }
         } else if (ch == '(') {
@@ -275,21 +275,21 @@ void Calculator::process_fn(myVector<double> &st, myVector<std::string> &fn) {
             std::cout << "Enter the value of the variable: a = ";
             getline(std::cin, a);
         }
-        st.push_back(std::atoi(a.c_str()));
+        st.push_back(std::atof(a.c_str()));
         fn.pop_back();
     } else if (f == "b") {
         if (b.empty()) {
             std::cout << "Enter the value of the variable: b = ";
             getline(std::cin, b);
         }
-        st.push_back(std::atoi(b.c_str()));
+        st.push_back(std::atof(b.c_str()));
         fn.pop_back();
     } else if (f == "c") {
         if (c.empty()) {
             std::cout << "Enter the value of the variable: c = ";
             getline(std::cin, c);
         }
-        st.push_back(std::atoi(c.c_str()));
+        st.push_back(std::atof(c.c_str()));
         fn.pop_back();
     }
 }
