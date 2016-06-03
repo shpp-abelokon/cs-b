@@ -1,6 +1,6 @@
 //
 // Created by abelokon on 28.03.16.
-// File: myVector.h
+// File: MyVector.h
 // Author abelokon
 //
 
@@ -8,26 +8,24 @@
 #define A5_COLLECTIONS_MYVECTOR_H
 
 template<class T>
-class myVector {
+class MyVector {
 private:
     T *vectorPtr; // reference to the region of allocated memory for the vector
     size_t maxSize; // the current size of the vector
     size_t vSize; // the number of elements in vector, 0 is the vector is empty
 
-    bool equal(const myVector<T> &other) const;
-
-    void resize();
+    bool equal(const MyVector<T> &other) const;
 
 public:
     typedef T *iterator;
 
-    myVector(size_t s = 0);
+    MyVector(size_t s = 0);
 
-    myVector(const myVector<T> &);
+    MyVector(const MyVector<T> &);
 
-    myVector(size_t, const T & = 0);
+    MyVector(size_t, const T & = 0);
 
-    ~myVector();
+    ~MyVector();
 
     size_t size() const;
 
@@ -51,9 +49,9 @@ public:
 
     void operator=(const T &other);
 
-    bool operator==(const myVector<T> &other) const;
+    bool operator==(const MyVector<T> &other) const;
 
-    bool operator!=(const myVector<T> &other) const;
+    bool operator!=(const MyVector<T> &other) const;
 
     iterator begin();
 
@@ -73,21 +71,21 @@ public:
 
     void insert(size_t index, const T &value);
 
-    void swap(myVector &other);
+    void swap(MyVector &other);
 
 };
 
 /* Constructor */
 template<typename T>
-myVector<T>::myVector(size_t s) {
+MyVector<T>::MyVector(size_t s) {
     vSize = s;
-    (s != 0) ? maxSize = s : maxSize = 2;
+    maxSize = (s != 0) ? s : 2;
     vectorPtr = new T[maxSize];
 }
 
 /* Copy constructor */
 template<typename T>
-myVector<T>::myVector(const myVector<T> &other) {
+MyVector<T>::MyVector(const MyVector<T> &other) {
     vSize = other.vSize;
     maxSize = other.maxSize;
     vectorPtr = new T[maxSize];
@@ -98,7 +96,7 @@ myVector<T>::myVector(const myVector<T> &other) {
 
 /* Secondary consrtuctor */
 template<typename T>
-myVector<T>::myVector(size_t newSize, const T &value) {
+MyVector<T>::MyVector(size_t newSize, const T &value) {
     vSize = newSize;
     maxSize = newSize;
     vectorPtr = new T[newSize];
@@ -109,47 +107,38 @@ myVector<T>::myVector(size_t newSize, const T &value) {
 
 /* Destructor */
 template<typename T>
-myVector<T>::~myVector() { }
+MyVector<T>::~MyVector() {
+    delete[] vectorPtr;
+    vSize = 0;
+}
 
 
 /* The number of elements in the vector */
 template<typename T>
-size_t myVector<T>::size() const { return vSize; }
-
-/* Change the size of the current vector */
-template<typename T>
-void myVector<T>::resize() {
-    maxSize *= 2;
-    T *tmpPtr = new T[maxSize];
-    for (int i = 0; i < vSize; ++i) {
-        tmpPtr[i] = vectorPtr[i];
-    }
-    T *tmp = vectorPtr;
-    vectorPtr = tmpPtr;
-    delete[]tmp;
-}
+size_t MyVector<T>::size() const { return vSize; }
 
 /* Change the size of the current vector by the specified size */
 template<typename T>
-void myVector<T>::resize(size_t size) {
-    maxSize = size;
-    T *tmpPtr = new T[maxSize];
-    for (int i = 0; i < vSize; ++i) {
-        tmpPtr[i] = vectorPtr[i];
+void MyVector<T>::resize(size_t size = 0) {
+    if (size >= maxSize) {
+        maxSize = (size > maxSize) ? size : maxSize * 2;
+        T *tmpPtr = new T[maxSize];
+        for (int i = 0; i < vSize; ++i) {
+            tmpPtr[i] = vectorPtr[i];
+        }
+        T *tmp = vectorPtr;
+        vectorPtr = tmpPtr;
+        delete[]tmp;
     }
-    T *tmp = vectorPtr;
-//    vSize = size;
-    vectorPtr = tmpPtr;
-    delete[]tmp;
 }
 
 /* Change the size of the current vector to the specified size and fill the given value */
 template<typename T>
-void myVector<T>::resize(size_t size, T value) {
+void MyVector<T>::resize(size_t size, T value) {
     maxSize = size;
     T *tmpPtr = new T[maxSize];
     for (int i = 0; i < maxSize; ++i) {
-        (i < vSize) ? tmpPtr[i] = vectorPtr[i] : tmpPtr[i] = value;
+        tmpPtr[i] = (i < vSize) ? vectorPtr[i] : value;
     }
     T *tmp = vectorPtr;
     vSize = maxSize;
@@ -159,9 +148,9 @@ void myVector<T>::resize(size_t size, T value) {
 
 /* Add element to the end of vector */
 template<typename T>
-void myVector<T>::push_back(const T &value) {
+void MyVector<T>::push_back(const T &value) {
     if (vSize == maxSize) {
-        resize();
+        resize(maxSize);
     }
     vectorPtr[vSize] = value;
     vSize++;
@@ -169,7 +158,7 @@ void myVector<T>::push_back(const T &value) {
 
 /* Delete the last element from the vector */
 template<typename T>
-void myVector<T>::pop_back() {
+void MyVector<T>::pop_back() {
     if (vSize != 0) {
         vSize--;
     }
@@ -177,37 +166,37 @@ void myVector<T>::pop_back() {
 
 /* The first element of the vector */
 template<typename T>
-T &myVector<T>::front() {
+T &MyVector<T>::front() {
     return *begin();
 }
 
 /* The last element of the vector */
 template<typename T>
-T &myVector<T>::back() {
+T &MyVector<T>::back() {
     return *(end() - 1);
 }
 
 /* Check the vector is empty */
 template<typename T>
-bool myVector<T>::empty() {
+bool MyVector<T>::empty() {
     return vSize == 0;
 }
 
 /* The capacity of the vector */
 template<typename T>
-size_t myVector<T>::capacity() {
+size_t MyVector<T>::capacity() {
     return maxSize;
 }
 
 /* Overload operator [] */
 template<typename T>
-T &myVector<T>::operator[](const size_t &_index) {
+T &MyVector<T>::operator[](const size_t &_index) {
     return vectorPtr[_index];
 }
 
 /* Overload operator = */
 template<typename T>
-void myVector<T>::operator=(const T &other) {
+void MyVector<T>::operator=(const T &other) {
     if (vectorPtr != other.vectorPtr) {
         maxSize = other.maxSize;
         vSize = other.currentSize;
@@ -221,32 +210,32 @@ void myVector<T>::operator=(const T &other) {
 
 /* Overload operator == */
 template<typename T>
-bool myVector<T>::operator==(const myVector<T> &other) const {
+bool MyVector<T>::operator==(const MyVector<T> &other) const {
     return (vectorPtr == other.vectorPtr) ? true : (vSize != other.vSize) ? false : equal(other);
 }
 
 /* Overload operator != */
 template<typename T>
-bool myVector<T>::operator!=(const myVector<T> &other) const {
+bool MyVector<T>::operator!=(const MyVector<T> &other) const {
     return !((vectorPtr == other.vectorPtr) ? true : (vSize != other.vSize) ? false : equal(other));
 }
 
 /* Pointer to the start of the vector */
 template<typename T>
-typename myVector<T>::iterator myVector<T>::begin() {
+typename MyVector<T>::iterator MyVector<T>::begin() {
     return vectorPtr;
 }
 
 /* Pointer to the end of the vector */
 template<typename T>
-typename myVector<T>::iterator myVector<T>::end() {
+typename MyVector<T>::iterator MyVector<T>::end() {
     return vectorPtr + (vSize);
 }
 
 
 /* A comparison of two objects */
 template<typename T>
-bool myVector<T>::equal(const myVector<T> &other) const {
+bool MyVector<T>::equal(const MyVector<T> &other) const {
     if (this->vSize != other.vSize) {
         return false;
     } else {
@@ -262,13 +251,13 @@ bool myVector<T>::equal(const myVector<T> &other) const {
 
 /* The max possible size of the vector */
 template<typename T>
-size_t myVector<T>::max_size() const {
+size_t MyVector<T>::max_size() const {
     return (size_t) (-1) / sizeof(size_t);
 }
 
 /* Delete element in current position with iterator */
 template<typename T>
-void myVector<T>::erase(iterator itr) {
+void MyVector<T>::erase(iterator itr) {
     if (itr != end()) {
         for (; itr != end(); ++itr) {
             *itr = *(itr + 1);
@@ -281,7 +270,7 @@ void myVector<T>::erase(iterator itr) {
 
 /* Reduces the amount of used memory by freeing unused */
 template<typename T>
-void myVector<T>::shrink_to_fit() {
+void MyVector<T>::shrink_to_fit() {
     if (maxSize != vSize) {
         T *tmpPtr = new T[vSize];
         int i = 0;
@@ -296,7 +285,7 @@ void myVector<T>::shrink_to_fit() {
 
 /* Reserve needed memory for currrent vector */
 template<typename T>
-void myVector<T>::reserve(const size_t value) {
+void MyVector<T>::reserve(const size_t value) {
     if (vSize < value) {
         if (maxSize < value) {
             T *tmpPtr = new T[value];
@@ -313,13 +302,13 @@ void myVector<T>::reserve(const size_t value) {
 
 /* Delete all elements of the vector */
 template<typename T>
-void myVector<T>::clear() {
+void MyVector<T>::clear() {
     vSize = 0;
 }
 
 /* Access element by index */
 template<typename T>
-T &myVector<T>::at(const size_t index) {
+T &MyVector<T>::at(const size_t index) {
     try {
         if (index >= maxSize) {
             throw 1;
@@ -327,13 +316,13 @@ T &myVector<T>::at(const size_t index) {
         return vectorPtr[index];
     } catch (int e) {
         std::cout << "Error at(" << index << "). Out of range." << std::endl;
-        exit(0);
+        exit(1);
     }
 }
 
 /* Insert element to the vector in curent position */
 template<typename T>
-void myVector<T>::insert(size_t index, const T &value) {
+void MyVector<T>::insert(size_t index, const T &value) {
     if (index == vSize) {
         resize(maxSize + 1);
     }
@@ -355,13 +344,13 @@ void myVector<T>::insert(size_t index, const T &value) {
         vSize += 1;
     } catch (int e) {
         std::cout << "Error insert (" << index << "). Out of range." << std::endl;
-        exit(0);
+        exit(1);
     }
 }
 
 /* Exchange contents of two vectors */
 template<typename T>
-void myVector<T>::swap(myVector &other) {
+void MyVector<T>::swap(MyVector &other) {
     if (vectorPtr != other.vectorPtr) {
         T *tmpPtr = vectorPtr;
         size_t tmpvSize = vSize;

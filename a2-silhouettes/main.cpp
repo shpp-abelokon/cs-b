@@ -5,7 +5,7 @@
 #include<QtGui/QImage>
 #include<QtGui/QColor>
 #include<iostream>
-#include"myVector.h"
+#include"MyVector.h"
 #include<queue>
 #include<vector>
 
@@ -28,9 +28,9 @@ bool **createMatrix(QImage *_img, int _rows, int _cols);
 
 string countSilhouettes(string &_filename);
 
-void calcNumObjInRows(bool **ptrImage, int _rows, int _columns, vector<int> &ptrObjH);
+void calculateNumberOfObjectsEachRow(bool **ptrImage, int _rows, int _columns, vector<int> &ptrObjH);
 
-void calcNumOfPxInColumns(bool **ptrImage, int _rows, int _columns, vector<int> &ptrOfpxObjV);
+void calculateNumberOfPixelsEachColumnObject(bool **ptrImage, int _rows, int _columns, vector<int> &ptrOfpxObjV);
 
 vector<Silhouette> findingAllSeparatedObjects(bool **ptrImage, int rows, int columns, int &averageHeight);
 
@@ -39,11 +39,11 @@ void recursionFillObject(int _rows, int _columns, int i, int j, bool **ptrIMG, v
 
 Silhouette createObject(vector<int> &charactXOfObj, vector<int> &charactYOfObj);
 
-void calcHeightAndWidthOfObj(vector<int> &charactXOfObj, vector<int> &charactYOfObj, int &width, int &height);
+void calculateHeightAndWidthObject(vector<int> &charactXOfObj, vector<int> &charactYOfObj, int &width, int &height);
 
 void deleteBinaryImage(bool **pBoolean, int rows);
 
-int calcApproximateNumOfObj(vector<Silhouette> &separatedObjects, int averageHeight);
+int calculateApproximateNumbersOfObjects(vector<Silhouette> &separatedObjects, int averageHeight);
 
 
 int main() {
@@ -55,7 +55,7 @@ int main() {
     if (!DEBUG) {
         getline(cin, filename);
     }
-    cout << endl<< "The number of silhouettes: " << countSilhouettes(filename) << endl;
+    cout << endl << "The number of silhouettes: " << countSilhouettes(filename) << endl;
 
     return 0;
 }
@@ -72,19 +72,21 @@ string countSilhouettes(string &_filename) {
 
     bool **binaryImage = createMatrix(img, rows, columns); // Creates binary image
 
-    vector<int> numOfObjH(rows); // the number of objects in each row
-    calcNumObjInRows(binaryImage, rows, columns, numOfObjH); // сount the number of objects in each row
+    vector<int> numberOfObjectsEachRow(rows); // the number of objects in each row
+    calculateNumberOfObjectsEachRow(binaryImage, rows, columns,
+                                    numberOfObjectsEachRow); // сount the number of objects in each row
 
 
-    vector<int> numOfpxObjV(columns); // the number of pixels in each column
-    calcNumOfPxInColumns(binaryImage, rows, columns, numOfpxObjV); // count the number of pixels in each column
+    vector<int> numberOfPixelsEachColumnObject(columns); // the number of pixels in each column
+    calculateNumberOfPixelsEachColumnObject(binaryImage, rows, columns,
+                                            numberOfPixelsEachColumnObject); // count the number of pixels in each column
 
     int averageHeight = 0; // The average height of all objects
     vector<Silhouette> separatedObjects = findingAllSeparatedObjects(binaryImage, rows, columns, averageHeight);
 
     deleteBinaryImage(binaryImage, rows); // Delete binary image
 
-    int approximateNumObj = calcApproximateNumOfObj(separatedObjects, averageHeight);
+    int approximateNumObj = calculateApproximateNumbersOfObjects(separatedObjects, averageHeight);
 
     string result = "Approximate number of persons = " + to_string(approximateNumObj);
 
@@ -94,18 +96,18 @@ string countSilhouettes(string &_filename) {
 /*  Discard is not the appropriate objects
  *  @return - int approximateNumObj - Approximate number of person in the image
  */
-int calcApproximateNumOfObj(vector<Silhouette> &separatedObjects, int averageHeight) {
-    int approximateNumObj = 0;
+int calculateApproximateNumbersOfObjects(vector<Silhouette> &separatedObjects, int averageHeight) {
+    int ApproximateNumbersObject = 0;
     for (int i = 0; i < separatedObjects.size(); ++i) {
         Silhouette dataObj = separatedObjects[i];
         if (dataObj.height > averageHeight / 2) { // discard all the objects height
             // Compare the proportions of body width with its height
             if ((dataObj.width <= dataObj.height / 2, 7) && (dataObj.width >= dataObj.height / 4, 7)) {
-                approximateNumObj++;
+                ApproximateNumbersObject++;
             }
         }
     }
-    return approximateNumObj;
+    return ApproximateNumbersObject;
 }
 
 /* Delete binary image */
@@ -117,7 +119,7 @@ void deleteBinaryImage(bool **pBoolean, int rows) {
 }
 
 /* find the width and height of the object */
-void calcHeightAndWidthOfObj(vector<int> &charactXOfObj, vector<int> &charactYOfObj, int &width, int &height) {
+void calculateHeightAndWidthObject(vector<int> &charactXOfObj, vector<int> &charactYOfObj, int &width, int &height) {
 
     for (int i = 0; i < charactXOfObj.size(); ++i) {
         if (charactXOfObj[i] > height) {
@@ -138,7 +140,8 @@ Silhouette createObject(vector<int> &charactXOfObj, vector<int> &charactYOfObj) 
     Silhouette dataObj;
     int heightOfObj = 0; // the width of the object
     int widthOfObj = 0; // the height of the object
-    calcHeightAndWidthOfObj(charactXOfObj, charactYOfObj, widthOfObj, heightOfObj); // Определяем высоту объекта и шрину
+    calculateHeightAndWidthObject(charactXOfObj, charactYOfObj, widthOfObj,
+                                  heightOfObj); // Определяем высоту объекта и шрину
 
     dataObj.width = widthOfObj; // The width assigned to the current object
     dataObj.height = heightOfObj; // The height assigned to the current object
@@ -194,7 +197,7 @@ vector<Silhouette> findingAllSeparatedObjects(bool **ptrImage, int _rows, int _c
 }
 
 /* Count the number of pixels in each column */
-void calcNumOfPxInColumns(bool **ptrImage, int _rows, int _columns, vector<int> &ptrOfpxObjV) {
+void calculateNumberOfPixelsEachColumnObject(bool **ptrImage, int _rows, int _columns, vector<int> &ptrOfpxObjV) {
     for (int j = 0; j < _columns; ++j) {
         for (int i = 0; i < _rows; ++i) {
             if (ptrImage[i][j] == 1) {
@@ -205,7 +208,7 @@ void calcNumOfPxInColumns(bool **ptrImage, int _rows, int _columns, vector<int> 
 }
 
 /* сount the number of objects in each row */
-void calcNumObjInRows(bool **ptrImage, int _rows, int _columns, vector<int> &ptrObjH) {
+void calculateNumberOfObjectsEachRow(bool **ptrImage, int _rows, int _columns, vector<int> &ptrObjH) {
     for (int i = 0; i < _rows; ++i) {
         for (int j = 0; j < _columns; ++j) {
             if (ptrImage[i][j] == 1) {
