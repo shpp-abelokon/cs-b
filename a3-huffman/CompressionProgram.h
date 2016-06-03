@@ -9,7 +9,7 @@
 #include <iostream>
 #include <list>
 #include <vector>
-#include "myList.h"
+#include "MyList.h"
 #include "Node.h"
 
 using namespace std;
@@ -39,6 +39,8 @@ public:
     void createCompressedFile(string codefile, string &ptrF, vector<vector<bool> > table, vector<int> symbolRating);
 
     string renameF(string &basic_string);
+
+    void separator();
 };
 
 #endif //A4_HUFF_COMPRESSIONPROGRAM_H

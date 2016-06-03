@@ -1,6 +1,6 @@
 //
 // Created by abelokon on 28.03.16.
-// File: myList.h
+// File: MyList.h
 // Author abelokon
 //
 
@@ -9,7 +9,7 @@
 
 
 template<typename T>
-class myList {
+class MyList {
 private:
     struct Node {
         T data;
@@ -64,11 +64,11 @@ public:
 
     };
 
-    myList();
+    MyList();
 
-    myList(const myList<T> &other);
+    MyList(const MyList<T> &other);
 
-    ~myList();
+    ~MyList();
 
     bool empty() const;
 
@@ -86,7 +86,7 @@ public:
 
     void erase(iterator itr);
 
-    void swap(myList &other);
+    void swap(MyList &other);
 
     size_t size();
 
@@ -113,45 +113,44 @@ public:
 
 /* Constructor iterator */
 template<typename T>
-myList<T>::iterator::iterator() {
+MyList<T>::iterator::iterator() {
     nodePtr = NULL;
 }
 
 /* Copy-constructor iterator*/
 template<typename T>
-myList<T>::iterator::iterator(myList<T>::Node *ptr) {
+MyList<T>::iterator::iterator(MyList<T>::Node *ptr) {
     nodePtr = ptr;
 }
 
 /* Overload the operator * to iterator */
 template<typename T>
-T &myList<T>::iterator::operator*() {
+T &MyList<T>::iterator::operator*() {
     return nodePtr->data;
 }
 
 /* Overload the operator == to iterator */
 template<typename T>
-bool myList<T>::iterator::operator==(const iterator &ptr) {
+bool MyList<T>::iterator::operator==(const iterator &ptr) {
     return nodePtr == ptr.nodePtr;
 }
 
 /* Overload the operator != to iterator */
 template<typename T>
-bool myList<T>::iterator::operator!=(const iterator &ptr) {
+bool MyList<T>::iterator::operator!=(const iterator &ptr) {
     return nodePtr != ptr.nodePtr;
 }
 
-
 /* Constructor */
 template<typename T>
-myList<T>::myList() {
+MyList<T>::MyList() {
     head = tail = NULL;
     count = 0;
 }
 
 /* Copy-constructor */
 template<typename T>
-myList<T>::myList(const myList<T> &other) {
+MyList<T>::MyList(const MyList<T> &other) {
     if (!other.empty()) {
         head = tail = NULL;
         count = 0;
@@ -165,19 +164,19 @@ myList<T>::myList(const myList<T> &other) {
 
 /* Destructor */
 template<typename T>
-myList<T>::~myList() {
+MyList<T>::~MyList() {
     clear();
 }
 
 /* Check the list is empty */
 template<typename T>
-bool myList<T>::empty() const {
+bool MyList<T>::empty() const {
     return (count == 0);
 }
 
 /* Delete all elements of the list */
 template<typename T>
-void myList<T>::clear() {
+void MyList<T>::clear() {
     while (head) {
         head->prev = NULL;
         head = head->next;
@@ -187,7 +186,7 @@ void myList<T>::clear() {
 
 /* Add element to the end of list */
 template<typename T>
-void myList<T>::push_back(const T &value) {
+void MyList<T>::push_back(const T &value) {
     Node *n = new Node;
     n->data = value;
     n->prev = NULL;
@@ -206,7 +205,7 @@ void myList<T>::push_back(const T &value) {
 
 /* Add element to the start of list */
 template<typename T>
-void myList<T>::push_front(const T &value) {
+void MyList<T>::push_front(const T &value) {
     Node *n = new Node;
     n->data = value;
     n->prev = NULL;
@@ -223,10 +222,10 @@ void myList<T>::push_front(const T &value) {
 
 /* Delete the last element from the list */
 template<typename T>
-void myList<T>::pop_back() {
+void MyList<T>::pop_back() {
     if (empty()) {
         std::cerr << "Error [pop_back]. The list is empty." << std::endl;
-        exit(0);
+        exit(1);
     }
     tail = tail->prev;
     (tail == NULL) ? head = NULL : tail->next = NULL, count--;
@@ -234,10 +233,10 @@ void myList<T>::pop_back() {
 
 /* Delete the first element from the list */
 template<typename T>
-void myList<T>::pop_front() {
+void MyList<T>::pop_front() {
     if (empty()) {
         std::cerr << "Error [pop_front]. The list is empty." << std::endl;
-        exit(0);
+        exit(1);
     }
     head = head->next;
     (head == NULL) ? tail = NULL : head->prev = NULL, count--;
@@ -245,37 +244,36 @@ void myList<T>::pop_front() {
 
 /* Number of elements of the list */
 template<typename T>
-size_t myList<T>::size() {
+size_t MyList<T>::size() {
     return count;
 }
 
 /* The first element in the list */
 template<typename T>
-T &myList<T>::front() {
+T &MyList<T>::front() {
     if (empty()) {
         std::cerr << "Error [front]. The list is empty." << std::endl;
-        exit(0);
+        exit(1);
     }
     return head->data;
 }
 
 /* The last element in the list */
 template<typename T>
-T &myList<T>::back() {
+T &MyList<T>::back() {
     if (empty()) {
         std::cerr << "Error[back]. The list is empty." << std::endl;
-        exit(0);
+        exit(1);
     }
     return tail->data;
 }
 
-
 /* Insert element to the list in current position */
 template<typename T>
-void myList<T>::insert(iterator itr, const T &value) {
+void MyList<T>::insert(iterator itr, const T &value) {
     if (empty()) {
         std::cerr << "Error [insert]. The list is empty." << std::endl;
-        exit(0);
+        exit(1);
     }
     if (itr == begin()) {
         push_front(value);
@@ -293,17 +291,17 @@ void myList<T>::insert(iterator itr, const T &value) {
         itr.nodePtr->prev = n;
         count++;
     } else {
-        std::cerr << "Error [insert]. Iterator is out of range." <<  std::endl;
-        exit(0);
+        std::cerr << "Error [insert]. Iterator is out of range." << std::endl;
+        exit(1);
     }
 }
 
 /* Delete element from the list from the current position */
 template<typename T>
-void myList<T>::erase(iterator itr) {
+void MyList<T>::erase(iterator itr) {
     if (empty()) {
-        std::cerr << "Error [erase]. The list is empty." <<  std::endl;
-        exit(0);
+        std::cerr << "Error [erase]. The list is empty." << std::endl;
+        exit(1);
     }
     else if (itr == begin()) {
         pop_front();
@@ -315,13 +313,13 @@ void myList<T>::erase(iterator itr) {
         itr.nodePtr->next->prev = itr.nodePtr->prev;
         count--;
     } else {
-        std::cerr << "Error [erase]. Iterator is out of rande." <<  std::endl;
+        std::cerr << "Error [erase]. Iterator is out of rande." << std::endl;
     }
 }
 
 /* Overload operator = */
 template<typename T>
-void myList<T>::operator=(const T &other) {
+void MyList<T>::operator=(const T &other) {
     if (head != other->head) {
         head = other->head;
         tail = other->tail;
@@ -329,9 +327,9 @@ void myList<T>::operator=(const T &other) {
     }
 }
 
-/* The exchange of content between two myList */
+/* The exchange of content between two MyList */
 template<typename T>
-void myList<T>::swap(myList &other) {
+void MyList<T>::swap(MyList &other) {
     if (other.head != head && other.tail != tail) {
         Node *head_tmp = other.head;
         Node *tail_tmp = other.tail;

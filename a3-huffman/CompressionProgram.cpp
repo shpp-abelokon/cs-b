@@ -10,7 +10,6 @@
 #include "CompressionProgram.h"
 
 
-#define space cout<<"---------------------------------------------"<<endl;
 #define DEBUG true
 
 
@@ -33,9 +32,8 @@ void CompressionProgram::compressFile(string &ptrF) {
 
 
     /* Debug */
-    if (DEBUG) {
-        printBinaryTreeHuffman(root, 0); // Output to the console a binary tree Huffman.
-    }
+    if (DEBUG) printBinaryTreeHuffman(root, 0); // Output to the console a binary tree Huffman.
+
     string codefile = ptrF + ".huff";
     createCompressedFile(codefile, ptrF, table, symbolRating);
     cout << "File compressed!" << endl;
@@ -67,11 +65,8 @@ void CompressionProgram::decompressionFile(string &ptrF) {
     while (!iFile.eof()) {
 
         bool b = byte & (1 << (7 - count));
-        if (b) {
-            p = p->right;
-        } else {
-            p = p->left;
-        }
+        if (b) p = p->right;
+        else p = p->left;
         if (p->symbol) {
             unsigned char k = p->symbol;
             oFile.put(k);
@@ -94,13 +89,11 @@ void CompressionProgram::createSymbolsRating(string &ptrF, vector<int> &symbolRa
     while (!file.eof()) {
         unsigned char ch = file.get();
         symbolRating[ch]++;
-        if (DEBUG) {
-            cout << ch;
-        }
+        if (DEBUG) cout << ch;
     }
     file.close();
     if (DEBUG) {
-        space;
+        separator();
         for (int i = 0; i < symbolRating.size(); ++i) {
             char a = i;
             cout << " " << symbolRating[i] << "-" << a << endl;
@@ -152,7 +145,7 @@ Node *CompressionProgram::createBinaryTreeHuffman(list<Node *> &ptrList) {
         ptrList.push_back(parent); // We put in the list of the parent Node
     }
     if (DEBUG) {
-        space
+        separator();
         cout << "root: " << ptrList.front()->symbol << " - " << ptrList.front()->value << endl;
     }
     return ptrList.front();
@@ -181,11 +174,8 @@ void CompressionProgram::printBinaryTreeHuffman(Node *root, size_t s = 0) {
         for (unsigned i = 0; i < s; i++) { //
             cout << "  ";
         }
-        if ((root->symbol) != 0) {
-            cout << root->value << " (" << root->symbol << ")" << endl;
-        } else {
-            cout << root->value << endl;
-        }
+        if ((root->symbol) != 0) cout << root->value << " (" << root->symbol << ")" << endl;
+        else cout << root->value << endl;
         printBinaryTreeHuffman(root->right, s + 3);
     }
 }
@@ -230,3 +220,8 @@ string CompressionProgram::renameF(string &basic_string) {
     }
     return tmp;
 }
+
+void CompressionProgram::separator() {
+    cout << "-----------------------------------------------------------" << endl;
+}
+

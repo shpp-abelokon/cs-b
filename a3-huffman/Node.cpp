@@ -15,6 +15,4 @@ Node::Node(Node *L, Node *R) {
     symbol = NULL;
 
     value = L->value + R->value;
-
-
 }
