@@ -3,8 +3,8 @@
 
 #define DEBUG true
 
-#define CODED_FILE "/home/lex/ClionProjects/cs-b/a3-huffman/test1.txt"
-#define DECODED_FILE "/home/lex/ClionProjects/cs-b/a3-huffman/test1.txt.huff"
+#define CODED_FILE "test1.txt"
+#define DECODED_FILE "test1.txt.huff"
 
 void displayGreeting();
 
