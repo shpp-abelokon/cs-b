@@ -4,33 +4,50 @@
 #include <iostream>
 #include "Calculator.h"
 #include "UnitTest.h"
+
 #define DEBUG true
 
+using namespace std;
+
+void displayGreeting();
+
+void result(string *pString, Calculator *calculator);
+
+void runTest();
+
 int main() {
-    std::cout << "    ---- Welcome to the calculator C++!!! ----" << std::endl;
-    std::cout << "[ plus: + ] [ minus: - ] [ multiply: * ] [ divide: / ] " << std::endl;
-    std::cout << "[ sinus: sin(x) ] [ cosine: cos(x) ] [ tan: tan(x) ] " << std::endl;
-    std::cout << "[ square root: sqrt(x) ] [ logarithm to the base 2 numbers: log(x) ]  " << std::endl;
-    std::cout << "[ x in degree y: x^Y ] [ x factorial: x! ] [ variables: a,b,c ] " << std::endl;
-    std::cout << "[ Close calculator C++: exit] " << std::endl << std::endl;
-    if (DEBUG) {
-        UnitTest *testing = new UnitTest();
-        testing->runTest();
-        delete (testing);
-    } else {
+
+    displayGreeting();
+
+    if (DEBUG) runTest();
+    else {
         Calculator *calculator = new Calculator();
         while (true) {
-            std::string input = "";
-            std::cout << "Input your math expression: ";
-            getline(std::cin, input);
-            if (input == "exit") {
-                break;
-            }
-            if (calculator->checkingString(&input)) {
-                std::cout << "Your expression: " << input << " = " << calculator->calculation(&input) << std::endl;
-            }
+            string input = "";
+            cout << "Input your math expression: ";
+            if (getline(cin, input) == "exit") break;
+            if (calculator->checkString(&input)) result(&input, calculator);
         }
         delete (calculator);
     }
     return 0;
+}
+
+void runTest() {
+    UnitTest *testing = new UnitTest();
+    testing->runTest();
+    delete (testing);
+}
+
+void result(string *pString, Calculator *calculator) {
+    cout << "Your expression: " << *pString << " = " << calculator->calculate(pString) << endl;
+}
+
+void displayGreeting() {
+    cout << "    ---- Welcome to the calculator C++!!! ----" << endl;
+    cout << "[ plus: + ] [ minus: - ] [ multiply: * ] [ divide: / ] " << endl;
+    cout << "[ sinus: sin(x) ] [ cosine: cos(x) ] [ tan: tan(x) ] " << endl;
+    cout << "[ square root: sqrt(x) ] [ logarithm to the base 2 numbers: log(x) ]  " << endl;
+    cout << "[ x in degree y: x^Y ] [ x factorial: x! ] [ variables: a,b,c ] " << endl;
+    cout << "[ Close calculator C++: exit] " << endl << endl;
 }

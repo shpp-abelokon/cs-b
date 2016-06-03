@@ -5,26 +5,27 @@
 #ifndef A1_CALCULATOR_CALCULATOR_H
 #define A1_CALCULATOR_CALCULATOR_H
 
-#include "myVector.h"
+#include "MyVector.h"
+#include <map>
 
 
 class Calculator {
 public:
 
-    double calculation(std::string *pString);
+    double calculate(std::string *pString);
 
-    bool checkingString(std::string *pString);
+    bool checkString(std::string *pString);
 
 private:
-    bool checkValidity(std::string *pString);
+    bool isCheckExpressionValidation(std::string *pString);
 
-    void clearSpaces(std::string *pString);
+    void removeSpaces(std::string *pString);
 
-    void transform_str(std::string *pString, int (*tolower)(int));
+    void tolower_str(std::string *pString, int (*tolower)(int));
 
-    void transformUnaryOperators(std::string *pString);
+    void convertUnaryOperatorsExpressions(std::string *pString);
 
-    void correctRecordMinusAndMultiplication(std::string *pString);
+    void convertImplicitMultiplicationAndSubtraction(std::string *pString);
 
     bool isNumber(char ch);
 
@@ -32,15 +33,15 @@ private:
 
     bool isUnaryOperator(char &ch);
 
-    void postfixNotation(std::string *pString);
+    void calculatePostfixNotation(std::string *pString);
 
-    void process_op(myVector<double> &st, char op);
+    void process_op(MyVector<double> &st, char op);
 
     int priority(char op);
 
-    myVector<double> st;
-    myVector<std::string> fn;
-    myVector<char> op;
+    MyVector<double> st;
+    MyVector<std::string> fn;
+    MyVector<char> op;
     std::string number;
     std::string func;
     std::string a, b, c;
@@ -51,20 +52,24 @@ private:
 
     bool isFunction(std::string func);
 
-    void process_fn(myVector<double> &st, myVector<std::string> &fn);
+    void process_fn(MyVector<double> &st, MyVector<std::string> &fn);
 
     double factorial(double operand);
 
 public:
     ~Calculator() {
-            myVector<double> st;
-            myVector<char> op;
-            myVector<std::string> fn;
+            MyVector<double> st;
+            MyVector<char> op;
+            MyVector<std::string> fn;
             std::string number;
             std::string func;
             std::string a, b, c;
             std::cout << "Memory clear..." << std::endl;
     };
+
+    void ERROR_MESSAGE();
+
+    bool isMathOperator(char ch);
 };
 
 
