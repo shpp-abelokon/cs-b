@@ -1,6 +1,6 @@
 //
 // Created by abelokon on 05.04.16.
-// File: myStack.h
+// File: MyStack.h
 // Author abelokon
 //
 
@@ -8,23 +8,21 @@
 #define A5_COLLECTIONS_MYSTACK_H
 
 template<typename T>
-class myStack {
+class MyStack {
     T *stackPtr; // reference to the region of allocated memory for the stack
     size_t _top; // the number of elements in stack
     size_t _capacity; // the current size of the stack
 
-    void resize();
-
     void resize(const size_t _size);
 
-    bool equal(const myStack<T> &stack);
+    bool equal(const MyStack<T> &stack);
 
 public:
-    myStack(size_t size = 2);
+    MyStack(size_t size = 2);
 
-    myStack(const myStack<T> &other);
+    MyStack(const MyStack<T> &other);
 
-    ~myStack();
+    ~MyStack();
 
     size_t size() const;
 
@@ -38,16 +36,16 @@ public:
 
     T &top() const;
 
-    void operator=(const myStack<T> &other);
+    void operator=(const MyStack<T> &other);
 
-    bool operator==(const myStack<T> &other);
+    bool operator==(const MyStack<T> &other);
 
-    bool operator!=(const myStack<T> &other);
+    bool operator!=(const MyStack<T> &other);
 };
 
 /* Constructor */
 template<typename T>
-myStack<T>::myStack(size_t size) {
+MyStack<T>::MyStack(size_t size) {
     if (size < 0) {
         std::cerr << "Error [size]. Use positive size of the stack." << std::endl;
     }
@@ -60,7 +58,7 @@ myStack<T>::myStack(size_t size) {
 
 /* Copy constructor */
 template<typename T>
-myStack<T>::myStack(const myStack<T> &other) {
+MyStack<T>::MyStack(const MyStack<T> &other) {
     _top = other._top;
     _capacity = other._capacity;
     stackPtr = new T[_capacity];
@@ -71,25 +69,26 @@ myStack<T>::myStack(const myStack<T> &other) {
 
 /* Destructor */
 template<typename T>
-myStack<T>::~myStack() {
-//    delete[] stackPtr;
+MyStack<T>::~MyStack() {
+    delete[] stackPtr;
+    _top = 0;
 }
 
 /* The number of elements in the stack */
 template<typename T>
-size_t myStack<T>::size() const {
+size_t MyStack<T>::size() const {
     return _top;
 }
 
 /* The capacity of the stack */
 template<typename T>
-size_t myStack<T>::capacity() const {
+size_t MyStack<T>::capacity() const {
     return _capacity;
 }
 
 /* Add element in stack */
 template<typename T>
-void myStack<T>::push(const T &value) {
+void MyStack<T>::push(const T &value) {
     if (_top >= _capacity) {
         resize(_top);
     }
@@ -99,33 +98,23 @@ void myStack<T>::push(const T &value) {
 
 /* Change the size of the current stack */
 template<typename T>
-void myStack<T>::resize() {
-    _capacity *= 2;
-    T *tmpPtr = new T[_capacity];
-    for (int i = 0; i < _top; ++i) {
-        tmpPtr[i] = stackPtr[i];
+void MyStack<T>::resize(const size_t _size = 0) {
+    if (_size >= _capacity) {
+        _capacity = (_size > _capacity) ? _size : _size * 2;
+        T *tmpPtr = new T[_capacity];
+        for (int i = 0; i < _top; ++i) {
+            tmpPtr[i] = stackPtr[i];
+        }
+        T *tmp = stackPtr;
+        stackPtr = tmpPtr;
+        delete[]tmp;
     }
-    T *tmp = stackPtr;
-    stackPtr = tmpPtr;
-    delete[]tmp;
-}
 
-/* Change the size of the current stack */
-template<typename T>
-void myStack<T>::resize(const size_t _size) {
-    _capacity = _size * 2;
-    T *tmpPtr = new T[_capacity];
-    for (int i = 0; i < _top; ++i) {
-        tmpPtr[i] = stackPtr[i];
-    }
-    T *tmp = stackPtr;
-    stackPtr = tmpPtr;
-    delete[]tmp;
 }
 
 /* Delete element from the stack */
 template<typename T>
-void myStack<T>::pop() {
+void MyStack<T>::pop() {
     if (empty()) {
         std::cerr << "Error [pop]. stack is empty." << std::endl;
         exit(1);
@@ -135,19 +124,19 @@ void myStack<T>::pop() {
 
 /* Check the stack is empty */
 template<typename T>
-bool myStack<T>::empty() const {
+bool MyStack<T>::empty() const {
     return _top == 0;
 }
 
 /* The top element in the stack */
 template<typename T>
-T &myStack<T>::top() const {
+T &MyStack<T>::top() const {
     return stackPtr[_top - 1];
 }
 
 /* Overload operator = */
 template<typename T>
-void myStack<T>::operator=(const myStack<T> &other) {
+void MyStack<T>::operator=(const MyStack<T> &other) {
     if (stackPtr != other.stackPtr) {
         if (other._top > _top) {
             resize(other._top);
@@ -161,19 +150,19 @@ void myStack<T>::operator=(const myStack<T> &other) {
 
 /* Overload operator == */
 template<typename T>
-bool myStack<T>::operator==(const myStack &other) {
+bool MyStack<T>::operator==(const MyStack &other) {
     return (stackPtr == other.stackPtr) ? true : (_top != other._top) ? false : equal(other);
 }
 
 /* Overload operator != */
 template<typename T>
-bool myStack<T>::operator!=(const myStack &other) {
+bool MyStack<T>::operator!=(const MyStack &other) {
     return (stackPtr == other.stackPtr) ? false : (_top != other._top) ? true : !equal(other);
 }
 
 /* A comparison of two objects */
 template<typename T>
-bool myStack<T>::equal(const myStack<T> &other) {
+bool MyStack<T>::equal(const MyStack<T> &other) {
     for (int i = 0; i < _top; ++i) {
         if (stackPtr[i] != other.stackPtr[i]) {
             return false;

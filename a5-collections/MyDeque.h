@@ -1,6 +1,6 @@
 //
 // Created by abelokon on 07.04.16.
-// File: myDeque.h
+// File: MyDeque.h
 // Author abelokon
 //
 
@@ -9,7 +9,7 @@
 
 
 template<typename T>
-class myDeque {
+class MyDeque {
 
     struct Node {
         T *dequePtr;
@@ -35,9 +35,9 @@ class myDeque {
 
 public:
 
-    myDeque(const size_t = 0);
+    MyDeque(const size_t = 0);
 
-    ~myDeque();
+    ~MyDeque();
 
     size_t size() const;
 
@@ -61,39 +61,44 @@ public:
 
 /* Constructor */
 template<typename T>
-myDeque<T>::myDeque(const size_t s) {
-    (s <= 0) ? _capacity = 2 : _capacity = s;
+MyDeque<T>::MyDeque(const size_t s) {
+    _capacity = (s <= 0) ? 2 : s;
     head->dequePtr = new T[_capacity];
     tail->dequePtr = new T[_capacity];
     head->prev = tail->dequePtr;
     tail->prev = head->dequePtr;
+    tail->next = head->next = NULL;
     _capacity_head = head->capacity = _capacity;
     _capacity_tail = tail->capacity = _capacity;
     _size = _count_tail = _count_head = head->count = tail->count = 0;
-
 }
 
 /* Destructor */
 template<typename T>
-myDeque<T>::~myDeque() {
-
+MyDeque<T>::~MyDeque() {
+    while (_count_head > 0) {
+        pop_front();
+    }
+    while (_count_tail > 0) {
+        pop_back();
+    }
 }
 
 /* The number of elements in the deque */
 template<typename T>
-size_t myDeque<T>::size() const {
+size_t MyDeque<T>::size() const {
     return _size;
 }
 
 /* Check the deque is empty */
 template<typename T>
-bool myDeque<T>::empty() {
+bool MyDeque<T>::empty() {
     return _size <= 0;
 }
 
 /* Add element to the front of deque */
 template<typename T>
-void myDeque<T>::push_front(const T &value) {
+void MyDeque<T>::push_front(const T &value) {
     if (_count_head == _capacity_head) {
         resize_head(_capacity_head);
     }
@@ -113,7 +118,7 @@ void myDeque<T>::push_front(const T &value) {
 
 /* Add element to the end of deque */
 template<typename T>
-void myDeque<T>::push_back(const T &value) {
+void MyDeque<T>::push_back(const T &value) {
     if (_count_tail == _capacity_tail) {
         resize_tail(_capacity_tail);
     }
@@ -133,7 +138,7 @@ void myDeque<T>::push_back(const T &value) {
 
 /* Change the size head of the current deque */
 template<typename T>
-void myDeque<T>::resize_head(const size_t size) {
+void MyDeque<T>::resize_head(const size_t size) {
     Node *tmp = new Node;
     size_t newSize = size * 2;
     tmp->dequePtr = new T[newSize];
@@ -149,7 +154,7 @@ void myDeque<T>::resize_head(const size_t size) {
 
 /* Change the size tail of the current deque */
 template<typename T>
-void myDeque<T>::resize_tail(const size_t size) {
+void MyDeque<T>::resize_tail(const size_t size) {
     Node *tmp = new Node;
     size_t newSize = size * 2;
     tmp->dequePtr = new T[newSize];
@@ -164,19 +169,19 @@ void myDeque<T>::resize_tail(const size_t size) {
 
 /* The first element of the deque */
 template<typename T>
-T &myDeque<T>::front() const {
+T &MyDeque<T>::front() const {
     return *head->dequePtr;
 }
 
 /* The last element of the deque */
 template<typename T>
-T &myDeque<T>::back() const {
+T &MyDeque<T>::back() const {
     return *tail->dequePtr;
 }
 
 /* Delete the first element from the deque */
 template<typename T>
-void myDeque<T>::pop_front() {
+void MyDeque<T>::pop_front() {
     if (empty()) {
         std::cerr << "Error [pop_front]. deque is empty!" << std::endl;
         exit(1);
@@ -197,7 +202,7 @@ void myDeque<T>::pop_front() {
 
 /* Delete the last element from the deque */
 template<typename T>
-void myDeque<T>::pop_back() {
+void MyDeque<T>::pop_back() {
     if (empty()) {
         std::cerr << "Error [pop_back]. deque is empty!" << std::endl;
         exit(1);
@@ -217,7 +222,7 @@ void myDeque<T>::pop_back() {
 
 /* Delete all elements of the deque */
 template<typename T>
-void myDeque<T>::clear() {
+void MyDeque<T>::clear() {
     while (_count_tail != 0) {
         pop_back();
     }
