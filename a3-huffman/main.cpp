@@ -17,13 +17,16 @@ int main() {
         displayGreeting();
         string task;
         getline(cin, task);
-        if (task == "exit") break;
+        if (task == "exit")
+            break;
         string filename;
         CompressionProgram *file = new CompressionProgram();
-        if (task == "encode") file->compressFile(fileRequest(CODED_FILE));
-        else if (task == "decode") file->decompressionFile(fileRequest(DECODED_FILE));
-        else cout << "Unknown commando please try again!" << endl;
-        delete (file);
+        if (task == "encode")
+            file->compressFile(fileRequest(CODED_FILE));
+        else if (task == "decode")
+            file->decompressionFile(fileRequest(DECODED_FILE));
+        else
+            cout << "Unknown commando please try again!" << endl;
     }
     return 0;
 }

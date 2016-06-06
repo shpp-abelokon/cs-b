@@ -32,7 +32,8 @@ void CompressionProgram::compressFile(string &ptrF) {
 
 
     /* Debug */
-    if (DEBUG) printBinaryTreeHuffman(root, 0); // Output to the console a binary tree Huffman.
+    if (DEBUG)
+        printBinaryTreeHuffman(root, 0); // Output to the console a binary tree Huffman.
 
     string codefile = ptrF + ".huff";
     createCompressedFile(codefile, ptrF, table, symbolRating);
@@ -65,8 +66,10 @@ void CompressionProgram::decompressionFile(string &ptrF) {
     while (!iFile.eof()) {
 
         bool b = byte & (1 << (7 - count));
-        if (b) p = p->right;
-        else p = p->left;
+        if (b)
+            p = p->right;
+        else
+            p = p->left;
         if (p->symbol) {
             unsigned char k = p->symbol;
             oFile.put(k);
@@ -89,7 +92,8 @@ void CompressionProgram::createSymbolsRating(string &ptrF, vector<int> &symbolRa
     while (!file.eof()) {
         unsigned char ch = file.get();
         symbolRating[ch]++;
-        if (DEBUG) cout << ch;
+        if (DEBUG)
+            cout << ch;
     }
     file.close();
     if (DEBUG) {
@@ -174,8 +178,10 @@ void CompressionProgram::printBinaryTreeHuffman(Node *root, size_t s = 0) {
         for (unsigned i = 0; i < s; i++) { //
             cout << "  ";
         }
-        if ((root->symbol) != 0) cout << root->value << " (" << root->symbol << ")" << endl;
-        else cout << root->value << endl;
+        if ((root->symbol) != 0)
+            cout << root->value << " (" << root->symbol << ")" << endl;
+        else
+            cout << root->value << endl;
         printBinaryTreeHuffman(root->right, s + 3);
     }
 }
