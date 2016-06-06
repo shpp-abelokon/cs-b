@@ -32,7 +32,7 @@ void calculateNumberOfObjectsEachRow(bool **ptrImage, int _rows, int _columns, v
 
 void calculateNumberOfPixelsEachColumnObject(bool **ptrImage, int _rows, int _columns, vector<int> &ptrOfpxObjV);
 
-vector<Silhouette> findingAllSeparatedObjects(bool **ptrImage, int rows, int columns, int &averageHeight);
+vector<Silhouette> findAllSelectedObjects(bool **ptrImage, int rows, int columns, int &averageHeight);
 
 void recursionFillObject(int _rows, int _columns, int i, int j, bool **ptrIMG, vector<int> &charactXOfObj,
                          vector<int> &charactYOfObj);
@@ -51,8 +51,7 @@ int main() {
     cout << "Enter the file with the silhouettes: ";
     if (DEBUG) {
         filename = "sport-silhouettes-vector-free-27120.png";
-    }
-    if (!DEBUG) {
+    }else{
         getline(cin, filename);
     }
     cout << endl << "The number of silhouettes: " << countSilhouettes(filename) << endl;
@@ -71,7 +70,7 @@ string countSilhouettes(string &_filename) {
     int columns = img->width(); // the number of columns in the image
 
     bool **binaryImage = createMatrix(img, rows, columns); // Creates binary image
-
+    delete img;
     vector<int> numberOfObjectsEachRow(rows); // the number of objects in each row
     calculateNumberOfObjectsEachRow(binaryImage, rows, columns,
                                     numberOfObjectsEachRow); // сount the number of objects in each row
@@ -82,7 +81,7 @@ string countSilhouettes(string &_filename) {
                                             numberOfPixelsEachColumnObject); // count the number of pixels in each column
 
     int averageHeight = 0; // The average height of all objects
-    vector<Silhouette> separatedObjects = findingAllSeparatedObjects(binaryImage, rows, columns, averageHeight);
+    vector<Silhouette> separatedObjects = findAllSelectedObjects(binaryImage, rows, columns, averageHeight);
 
     deleteBinaryImage(binaryImage, rows); // Delete binary image
 
@@ -112,10 +111,8 @@ int calculateApproximateNumbersOfObjects(vector<Silhouette> &separatedObjects, i
 
 /* Delete binary image */
 void deleteBinaryImage(bool **pBoolean, int rows) {
-    for (int i = 0; i < rows; ++i) {
-        delete pBoolean[i];
-    }
-    delete pBoolean;
+    delete [] pBoolean [0];
+    delete [] pBoolean;
 }
 
 /* find the width and height of the object */
@@ -141,7 +138,7 @@ Silhouette createObject(vector<int> &charactXOfObj, vector<int> &charactYOfObj) 
     int heightOfObj = 0; // the width of the object
     int widthOfObj = 0; // the height of the object
     calculateHeightAndWidthObject(charactXOfObj, charactYOfObj, widthOfObj,
-                                  heightOfObj); // Определяем высоту объекта и шрину
+                                  heightOfObj); // Define the object's height and width
 
     dataObj.width = widthOfObj; // The width assigned to the current object
     dataObj.height = heightOfObj; // The height assigned to the current object
@@ -173,10 +170,11 @@ void recursionFillObject(int _rows, int _columns, int i, int j, bool **ptrIMG, v
 }
 
 /*
+ *
  *  Find all silhouettes and create from them objects
  *  @return - vector<Silhouette> separatedObjects - the vector of separated objects
  */
-vector<Silhouette> findingAllSeparatedObjects(bool **ptrImage, int _rows, int _columns, int &averageHeight) {
+vector<Silhouette> findAllSelectedObjects(bool **ptrImage, int _rows, int _columns, int &averageHeight) {
     int heightOfObjects = 0; // the total height of the objects
     vector<Silhouette> separatedObjects; // the vector of separated objects
     for (int i = 0; i < _rows; ++i) {
@@ -231,10 +229,7 @@ bool **createMatrix(QImage *_img, int _rows, int _columns) {
     for (int y = 0; y < _rows; y++) {
         for (int x = 0; x < _columns; x++) {
             matrix[y][x] = (QColor(_img->pixel(x, y)).lightness() < 128) ? 1 : 0;
-//                cout<<((QColor(_img->pixel(x,y)).lightness() < 128) ? 1 : 0)<<" ";
         }
-//            cout<<endl;
     }
-
     return matrix;
 }
