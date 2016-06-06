@@ -35,7 +35,7 @@ private:
 
     void calculatePostfixNotation(std::string *pString);
 
-    void process_op(MyVector<double> &st, char op);
+    void performMathOperations(MyVector<double> &st, char op);
 
     int priority(char op);
 
@@ -52,7 +52,7 @@ private:
 
     bool isFunction(std::string func);
 
-    void process_fn(MyVector<double> &st, MyVector<std::string> &fn);
+    void performMathFunctions(MyVector<double> &st, MyVector<std::string> &fn);
 
     double factorial(double operand);
 
@@ -67,7 +67,7 @@ public:
             std::cout << "Memory clear..." << std::endl;
     };
 
-    void ERROR_MESSAGE();
+    void errorMassage();
 
     bool isMathOperator(char ch);
 };

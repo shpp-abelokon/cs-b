@@ -15,7 +15,7 @@
 bool Calculator::checkString(std::string *pString) {
     removeSpaces(pString);
     tolower_str(pString, tolower);
-    return ((isCheckExpressionValidation(pString)) ? ERROR_MESSAGE(), false : true);
+    return ((isCheckExpressionValidation(pString)) ? errorMassage(), false : true);
 }
 
 /*
@@ -48,27 +48,34 @@ bool Calculator::isCheckExpressionValidation(std::string *pString) {
             func2 += ch;
             hasfunc = true;
         } else {
-            if (!func2.empty() && !isFunction(func2)) return true;
+            if (!func2.empty() && !isFunction(func2)){
+                return true;
+            }
             func2 = "";
             hasfunc = false;
         }
-        if (ch == '(') isBracket = true;
-
-        if (ch == ')' && !isBracket) return true;
-
+        if (ch == '(')
+            isBracket = true;
+        if (ch == ')' && !isBracket)
+            return true;
         if (i == 0) {
-            if (ch == '*' || ch == '/' || ch == '^' || ch == '!' || ch == ')') return true;
-            if (ch == '+' && (*pString)[i + 1] == '+') return true;
+            if (ch == '*' || ch == '/' || ch == '^' || ch == '!' || ch == ')')
+                return true;
+            if (ch == '+' && (*pString)[i + 1] == '+')
+                return true;
         }
         if (i == (*pString).length() - 1) {
-            if ((isMathOperator(ch) || ch == '(') || !isFunction(func2) && hasfunc) return true;
+            if ((isMathOperator(ch) || ch == '(') || !isFunction(func2) && hasfunc)
+                return true;
         }
         if (i != 0 && i != (*pString).length()) {
             ch2 = (*pString)[i - 1];
             if (ch == '*' || ch == '/' || ch == '^' || ch == '!') {
-                if (isOperator(ch2)) return true;
+                if (isOperator(ch2))
+                    return true;
             }
-            if (i > 2 && ch == '+' && ch2 == '+' && (*pString)[i - 2] == '+') return true;
+            if (i > 2 && ch == '+' && ch2 == '+' && (*pString)[i - 2] == '+')
+                return true;
         }
     }
     return l - r != 0;
@@ -79,7 +86,10 @@ bool Calculator::isCheckExpressionValidation(std::string *pString) {
  */
 void Calculator::removeSpaces(std::string *pString) {
     for (unsigned int i = 0; i < (*pString).length(); ++i) {
-        if ((*pString)[i] == ' ') (*pString).erase(i, 1), --i;
+        if ((*pString)[i] == ' '){
+            (*pString).erase(i, 1);
+            --i;
+        }
     }
 }
 
@@ -145,7 +155,7 @@ void Calculator::calculatePostfixNotation(std::string *pString) {
         }
         if (isOperator(ch)) {
             while (!op.empty() && priority(ch) <= priority(op.back())) {
-                process_op(st, op.back());
+                performMathOperations(st, op.back());
                 op.pop_back();
             }
             op.push_back(ch);
@@ -159,7 +169,7 @@ void Calculator::calculatePostfixNotation(std::string *pString) {
             op.push_back('(');
         } else if (ch == ')') {
             while (op.back() != '(') {
-                process_op(st, op.back());
+                performMathOperations(st, op.back());
                 op.pop_back();
             }
             op.pop_back();
@@ -173,7 +183,7 @@ void Calculator::calculatePostfixNotation(std::string *pString) {
         }
     }
     while (!op.empty()) {
-        process_op(st, op.back());
+        performMathOperations(st, op.back());
         op.pop_back();
     }
 }
@@ -181,9 +191,9 @@ void Calculator::calculatePostfixNotation(std::string *pString) {
 /*
  *  Perform mathematical operations: +, -, *, /, ^, f
  */
-void Calculator::process_op(MyVector<double> &st, char op) {
+void Calculator::performMathOperations(MyVector<double> &st, char op) {
     if (op == 'f') {
-        process_fn(st, fn);
+        performMathFunctions(st, fn);
     } else {
         double r = st.back();
         st.pop_back();
@@ -214,7 +224,7 @@ void Calculator::process_op(MyVector<double> &st, char op) {
 /*
  *  Performed mathematical functions: sin, cos, tan, log, sqrt, "!" and variables of the equation: a,b,c
  */
-void Calculator::process_fn(MyVector<double> &st, MyVector<std::string> &fn) {
+void Calculator::performMathFunctions(MyVector<double> &st, MyVector<std::string> &fn) {
     std::string f = fn.back();
     std::map<std::string, int> mathFunctions = {{"sin",  1},{"cos",  1},{"tan",  1},{"log",  1},{"sqrt", 1},{"!",    1},
                                                 {"a",    0},{"b",    0},{"c",    0}};
@@ -312,7 +322,7 @@ void Calculator::tolower_str(std::string *pString, int (*tolower)(int)) {
     }
 }
 
-void Calculator::ERROR_MESSAGE() {
+void Calculator::errorMassage() {
     std::cout << "Invalid expression... " << std::endl;
 }
 

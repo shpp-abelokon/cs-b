@@ -25,10 +25,14 @@ int main() {
         while (true) {
             string input = "";
             cout << "Input your math expression: ";
-            if (getline(cin, input) == "exit") break;
-            if (calculator->checkString(&input)) result(&input, calculator);
+            getline(cin, input);
+            if (input == "exit"){
+                break;
+            }
+            else if (calculator->checkString(&input)){
+                result(&input, calculator);
+            }
         }
-        delete (calculator);
     }
     return 0;
 }
@@ -36,7 +40,6 @@ int main() {
 void runTest() {
     UnitTest *testing = new UnitTest();
     testing->runTest();
-    delete (testing);
 }
 
 void result(string *pString, Calculator *calculator) {
