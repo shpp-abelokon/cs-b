@@ -106,9 +106,10 @@ public:
         return e;
     }
 
-    void operator=(const T &other);
+    MyList<T>& operator=(const T &other);
 
 
+    void copyDataFromFirstListToSecondList(MyList *first, MyList *second);
 };
 
 /* Constructor iterator */
@@ -177,11 +178,16 @@ bool MyList<T>::empty() const {
 /* Delete all elements of the list */
 template<typename T>
 void MyList<T>::clear() {
-    while (head) {
-        head->prev = NULL;
-        head = head->next;
+    while (count !=0) {
+        Node *temp = tail;
+        if (temp->prev != NULL)
+            tail = temp->prev;
+        if (tail->next != NULL)
+            tail->next = NULL;
+        delete temp;
+        count--;
     }
-    count = 0;
+    head = tail = NULL;
 }
 
 /* Add element to the end of list */
@@ -216,6 +222,7 @@ void MyList<T>::push_front(const T &value) {
         n->next = head;
         head->prev = n;
         head = n;
+        head->data= n->data;
     }
     count++;
 }
@@ -319,30 +326,33 @@ void MyList<T>::erase(iterator itr) {
 
 /* Overload operator = */
 template<typename T>
-void MyList<T>::operator=(const T &other) {
+MyList<T>& MyList<T>::operator=(const T &other) {
     if (head != other->head) {
-        head = other->head;
-        tail = other->tail;
-        count = other->count;
+        copyDataFromFirstListToSecondList(other,this);
     }
+    return *this;
 }
 
 /* The exchange of content between two MyList */
 template<typename T>
 void MyList<T>::swap(MyList &other) {
     if (other.head != head && other.tail != tail) {
-        Node *head_tmp = other.head;
-        Node *tail_tmp = other.tail;
-        size_t count_tmp = other.count;
-
-        other.head = head;
-        other.tail = tail;
-        other.count = count;
-        head = head_tmp;
-        tail = tail_tmp;
-        count = count_tmp;
-
+        MyList *temp  = new MyList();
+        copyDataFromFirstListToSecondList(&other,temp);
+        copyDataFromFirstListToSecondList(this,&other);
+        copyDataFromFirstListToSecondList(temp,this);
+        temp->clear();
     }
+}
+/* Copy the data from the first list to the second list */
+template <typename T>
+void MyList<T>::copyDataFromFirstListToSecondList(MyList *first, MyList *second) {
+    second->clear();
+    Node *t = first->head;
+        while(first->count > second->count) {
+            second->push_back(t->data);
+            t=t->next;
+        }
 }
 
 
