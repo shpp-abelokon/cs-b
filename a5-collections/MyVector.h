@@ -16,10 +16,12 @@ private:
 
     bool equal(const MyVector<T> &other) const;
 
+    void copyDataFromFirstVectorToSecondVector(const MyVector *first, MyVector *second);
+
 public:
     typedef T *iterator;
 
-    MyVector(size_t s = 0);
+    MyVector(int s = 0);
 
     MyVector(const MyVector<T> &);
 
@@ -47,7 +49,7 @@ public:
 
     T &operator[](const size_t &_index);
 
-    void operator=(const T &other);
+    MyVector<T> &operator=(const MyVector &other);
 
     bool operator==(const MyVector<T> &other) const;
 
@@ -73,17 +75,18 @@ public:
 
     void swap(MyVector &other);
 
+
 };
 
 /* Constructor */
 template<typename T>
-MyVector<T>::MyVector(size_t s) {
-    vSize = s;
-    maxSize = (s != 0) ? s : 2;
+MyVector<T>::MyVector(int s) {
+    vSize = (size_t) s;
+    maxSize = (size_t) ((s != 0) ? s : 2);
     vectorPtr = new T[maxSize];
 }
 
-/* Copy constructor */
+///* Copy constructor */
 template<typename T>
 MyVector<T>::MyVector(const MyVector<T> &other) {
     vSize = other.vSize;
@@ -135,15 +138,13 @@ void MyVector<T>::resize(size_t size = 0) {
 /* Change the size of the current vector to the specified size and fill the given value */
 template<typename T>
 void MyVector<T>::resize(size_t size, T value) {
-    maxSize = size;
-    T *tmpPtr = new T[maxSize];
-    for (int i = 0; i < maxSize; ++i) {
+    T *tmpPtr = new T[size];
+    for (int i = 0; i < size; ++i) {
         tmpPtr[i] = (i < vSize) ? vectorPtr[i] : value;
     }
-    T *tmp = vectorPtr;
-    vSize = maxSize;
+    delete[] vectorPtr;
     vectorPtr = tmpPtr;
-    delete[]tmp;
+    vSize = maxSize = size;
 }
 
 /* Add element to the end of vector */
@@ -161,6 +162,9 @@ template<typename T>
 void MyVector<T>::pop_back() {
     if (vSize != 0) {
         vSize--;
+    }
+    if (vSize < maxSize / 2) {
+        shrink_to_fit();
     }
 }
 
@@ -196,16 +200,13 @@ T &MyVector<T>::operator[](const size_t &_index) {
 
 /* Overload operator = */
 template<typename T>
-void MyVector<T>::operator=(const T &other) {
+MyVector<T> &MyVector<T>::operator=(const MyVector &other) {
     if (vectorPtr != other.vectorPtr) {
-        maxSize = other.maxSize;
-        vSize = other.currentSize;
         delete[] vectorPtr;
-        T *vector = new T[maxSize];
-        for (size_t i = 0; i < maxSize; ++i) {
-            vector[i] = other.vectorPtr[i];
-        }
+        vectorPtr = new T[other.vSize];
+        copyDataFromFirstVectorToSecondVector(&other, this);
     }
+    return *this;
 }
 
 /* Overload operator == */
@@ -303,7 +304,9 @@ void MyVector<T>::reserve(const size_t value) {
 /* Delete all elements of the vector */
 template<typename T>
 void MyVector<T>::clear() {
-    vSize = 0;
+    delete[] vectorPtr;
+    maxSize = vSize = 0;
+    vectorPtr = NULL;
 }
 
 /* Access element by index */
@@ -330,7 +333,7 @@ void MyVector<T>::insert(size_t index, const T &value) {
         if (index < 0 || index > vSize) {
             throw 1;
         }
-        T *tmpPtr = new T[maxSize];
+        T *tmpPtr = new T[maxSize + 1];
         for (int i = 0, j = 0; i < vSize + 1; ++i, ++j) {
             if (i == index) {
                 tmpPtr[i] = value;
@@ -342,6 +345,7 @@ void MyVector<T>::insert(size_t index, const T &value) {
         delete[] vectorPtr;
         vectorPtr = tmpPtr;
         vSize += 1;
+        maxSize += 1;
     } catch (int e) {
         std::cout << "Error insert (" << index << "). Out of range." << std::endl;
         exit(1);
@@ -352,15 +356,25 @@ void MyVector<T>::insert(size_t index, const T &value) {
 template<typename T>
 void MyVector<T>::swap(MyVector &other) {
     if (vectorPtr != other.vectorPtr) {
-        T *tmpPtr = vectorPtr;
-        size_t tmpvSize = vSize;
-        size_t tmpMaxSize = maxSize;
-        vectorPtr = other.vectorPtr;
-        vSize = other.vSize;
-        maxSize = other.maxSize;
-        other.vectorPtr = tmpPtr;
-        other.vSize = tmpvSize;
-        other.maxSize = tmpMaxSize;
+        MyVector<T> temp;
+        temp.vectorPtr = new T[other.maxSize];
+        copyDataFromFirstVectorToSecondVector(&other, &temp);
+        delete[] other.vectorPtr;
+        other.vectorPtr = new T[this->maxSize];
+        copyDataFromFirstVectorToSecondVector(this, &other);
+        delete[] vectorPtr;
+        vectorPtr = new T[temp.maxSize];
+        copyDataFromFirstVectorToSecondVector(&temp, this);
+    }
+}
+
+/* Copy the data from the first vector to the second vector  */
+template<typename T>
+void MyVector<T>::copyDataFromFirstVectorToSecondVector(const MyVector *first, MyVector *second) {
+    second->vSize = first->vSize;
+    second->maxSize = first->maxSize;
+    for (int i = 0; i < first->vSize; ++i) {
+        second->vectorPtr[i] = first->vectorPtr[i];
     }
 }
 
