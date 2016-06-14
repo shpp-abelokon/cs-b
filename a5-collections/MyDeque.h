@@ -13,6 +13,7 @@ class MyDeque {
 
     struct Node {
         T *dequePtr;
+        T *dequePtr_tail;
         Node *next;
         Node *prev;
         int count;
@@ -20,6 +21,8 @@ class MyDeque {
     };
     Node *tail = new Node;
     Node *head = new Node;
+    Node *start_tail;
+    Node *start_head;
 
 
     int _size;
@@ -33,8 +36,16 @@ class MyDeque {
 
     void resize_tail(const int size);
 
-public:
+    Node *findFirstNode(Node *pNodeF, Node *pNodeL) {
+        Node *tmp = new Node;
+        tmp = pNodeF;
+        while (tmp->prev != pNodeL) {
+            tmp = tmp->prev;
+        }
+        return tmp;
+    };
 
+public:
 
     MyDeque(const int = 0);
 
@@ -57,6 +68,10 @@ public:
     T &back() const;
 
     void clear();
+
+    void pop_back_tail();
+
+    void pop_front_tail();
 };
 
 /* Constructor */
@@ -73,6 +88,8 @@ MyDeque<T>::MyDeque(const int s) {
     _capacity_tail = tail->capacity = _capacity;
     _capacity *= 2;
     _size = _count_tail = _count_head = head->count = tail->count = 0;
+    head->dequePtr_tail = head->dequePtr;
+    tail->dequePtr_tail = tail->dequePtr;
 }
 
 /* Destructor */
@@ -137,6 +154,7 @@ void MyDeque<T>::resize_head(const int size) {
     tmp->prev = head;
 
     head = tmp;
+    head->dequePtr_tail = head->dequePtr;
     _capacity_head += newSize;
     _capacity += newSize;
 }
@@ -153,6 +171,7 @@ void MyDeque<T>::resize_tail(const int size) {
     tmp->prev = tail;
 
     tail = tmp;
+    tail->dequePtr_tail = tail->dequePtr;
     _capacity_tail += newSize;
     _capacity += newSize;
 }
@@ -160,26 +179,26 @@ void MyDeque<T>::resize_tail(const int size) {
 /* The first element of the deque */
 template<typename T>
 T &MyDeque<T>::front() const {
-    return *head->dequePtr;
+    return (_count_head == 0) ? *start_tail->dequePtr_tail : *head->dequePtr;
 }
 
 /* The last element of the deque */
 template<typename T>
 T &MyDeque<T>::back() const {
-    return *tail->dequePtr;
+    return (_count_tail == 0) ? *start_head->dequePtr_tail : *tail->dequePtr;
 }
 
 /* Delete the first element from the deque */
 template<typename T>
 void MyDeque<T>::pop_front() {
     if (empty()) {
-        std::cerr << "Error [pop_back]. deque is empty!" << std::endl;
+        std::cout << "Error [pop_back]. deque is empty!" << std::endl;
         exit(1);
     } else if (_count_head > 1) {
         if (head->count > 1) {
             head->dequePtr--;
             head->count--;
-        } else if (head->count == 1) {
+        } else if (head->count == 1 && _size > 1) {
             delete[] head->dequePtr;
             _capacity -= head->capacity;
             _capacity_head -= head->capacity;
@@ -188,10 +207,13 @@ void MyDeque<T>::pop_front() {
         }
         _count_head--;
         _size--;
-    } else if(_count_head == 1){
+    } else if(_count_head == 1 && _size >1){
         head->count--;
         _count_head--;
         _size--;
+        start_tail = findFirstNode(tail, head);
+    }else if(_count_head == 0 && _size!=0){
+        pop_back_tail();
     }
 }
 
@@ -199,13 +221,13 @@ void MyDeque<T>::pop_front() {
 template<typename T>
 void MyDeque<T>::pop_back() {
     if (empty()) {
-        std::cerr << "Error [pop_back]. deque is empty!" << std::endl;
+        std::cout << "Error [pop_back]. deque is empty!" << std::endl;
         exit(1);
-    }else if (_count_tail > 1) {
+    } else if (_count_tail > 1) {
         if (tail->count > 1) {
             tail->dequePtr--;
             tail->count--;
-        } else if (tail->count == 1) {
+        } else if (tail->count == 1 && _size > 1) {
             delete[] tail->dequePtr;
             _capacity -= tail->capacity;
             _capacity_tail -= tail->capacity;
@@ -214,10 +236,13 @@ void MyDeque<T>::pop_back() {
         }
         _count_tail--;
         _size--;
-    } else if(_count_tail == 1){
+    } else if(_count_tail == 1 && _size >1){
         tail->count--;
         _count_tail--;
         _size--;
+        start_head = findFirstNode(head, tail);
+    }else if(_count_tail == 0 && _size!=0){
+        pop_front_tail();
     }
 }
 
@@ -229,6 +254,44 @@ void MyDeque<T>::clear() {
     }
     while (_count_head != 0) {
         pop_front();
+    }
+}
+
+/* Delete the first element from  head the deque */
+template <typename T>
+void MyDeque<T>::pop_back_tail() {
+    if(start_tail->count > 1){
+        start_tail->dequePtr_tail++;
+        start_tail->count--;
+        _size--;
+    }else if(_count_tail > 1 && _size >1){
+//        delete [] start_head->dequePtr;
+        start_tail = start_tail->next;
+        start_tail->prev=head;
+        _size--;
+    }else{
+        start_tail->dequePtr_tail++;
+        start_tail->count--;
+        _size--;
+    }
+}
+
+/* Delete the first element from tail the deque */
+template <typename T>
+void MyDeque<T>::pop_front_tail() {
+    if(start_head->count > 1){
+        start_head->dequePtr_tail++;
+        start_head->count--;
+        _size--;
+    }else if(_count_head > 1 && _size >1){
+//        delete [] start_head->dequePtr;
+        start_head = start_head->next;
+        start_head->prev=tail;
+        _size--;
+    }else{
+        start_head->dequePtr_tail++;
+        start_head->count--;
+        _size--;
     }
 }
 
