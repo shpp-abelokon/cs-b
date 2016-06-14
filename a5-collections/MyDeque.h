@@ -13,33 +13,34 @@ class MyDeque {
 
     struct Node {
         T *dequePtr;
-        T *next;
-        T *prev;
-        size_t count;
-        size_t capacity;
+        Node *next;
+        Node *prev;
+        int count;
+        int capacity;
     };
     Node *tail = new Node;
     Node *head = new Node;
 
 
-    size_t _size;
-    size_t _capacity;
-    size_t _capacity_tail;
-    size_t _capacity_head;
-    size_t _count_tail;
-    size_t _count_head;
+    int _size;
+    int _capacity;
+    int _capacity_tail;
+    int _capacity_head;
+    int _count_tail;
+    int _count_head;
 
-    void resize_head(const size_t size);
+    void resize_head(const int size);
 
-    void resize_tail(const size_t size);
+    void resize_tail(const int size);
 
 public:
 
-    MyDeque(const size_t = 0);
+
+    MyDeque(const int = 0);
 
     ~MyDeque();
 
-    size_t size() const;
+    int size() const;
 
     bool empty();
 
@@ -56,37 +57,35 @@ public:
     T &back() const;
 
     void clear();
-
 };
 
 /* Constructor */
 template<typename T>
-MyDeque<T>::MyDeque(const size_t s) {
-    _capacity = (s <= 0) ? 2 : s;
+MyDeque<T>::MyDeque(const int s) {
+    _capacity = (s <= 1) ? 3 : s;
     head->dequePtr = new T[_capacity];
     tail->dequePtr = new T[_capacity];
-    head->prev = tail->dequePtr;
-    tail->prev = head->dequePtr;
+
+    head->prev = tail;
+    tail->prev = head;
     tail->next = head->next = NULL;
     _capacity_head = head->capacity = _capacity;
     _capacity_tail = tail->capacity = _capacity;
+    _capacity *= 2;
     _size = _count_tail = _count_head = head->count = tail->count = 0;
 }
 
 /* Destructor */
 template<typename T>
 MyDeque<T>::~MyDeque() {
-    while (_count_head > 0) {
-        pop_front();
-    }
-    while (_count_tail > 0) {
-        pop_back();
-    }
+    clear();
+    delete [] head->dequePtr;
+    delete [] tail->dequePtr;
 }
 
 /* The number of elements in the deque */
 template<typename T>
-size_t MyDeque<T>::size() const {
+int MyDeque<T>::size() const {
     return _size;
 }
 
@@ -102,13 +101,8 @@ void MyDeque<T>::push_front(const T &value) {
     if (_count_head == _capacity_head) {
         resize_head(_capacity_head);
     }
-    if (_count_head != 0) {
+    if (head->count != 0) {
         head->dequePtr++;
-    } else if (_count_head == 0 && _count_tail > 0) {
-        head->dequePtr = head->prev;
-    } else if (_size == 0) {
-        tail->prev = tail->dequePtr;
-        tail->dequePtr = head->dequePtr;
     }
     *head->dequePtr = value;
     _count_head++;
@@ -122,13 +116,8 @@ void MyDeque<T>::push_back(const T &value) {
     if (_count_tail == _capacity_tail) {
         resize_tail(_capacity_tail);
     }
-    if (_count_tail != 0) {
+    if (tail->count != 0) {
         tail->dequePtr++;
-    } else if (_count_tail == 0 && _count_head > 0) {
-        tail->dequePtr = tail->prev;
-    } else if (_size == 0) {
-        head->prev = head->dequePtr;
-        head->dequePtr = tail->dequePtr;
     }
     *tail->dequePtr = value;
     _count_tail++;
@@ -138,30 +127,31 @@ void MyDeque<T>::push_back(const T &value) {
 
 /* Change the size head of the current deque */
 template<typename T>
-void MyDeque<T>::resize_head(const size_t size) {
+void MyDeque<T>::resize_head(const int size) {
     Node *tmp = new Node;
-    size_t newSize = size * 2;
+    int newSize = size * 2;
     tmp->dequePtr = new T[newSize];
-    head->next = tmp->dequePtr;
-    tmp->prev = head->dequePtr;
     tmp->count = 0;
     tmp->capacity = newSize;
+    head->next = tmp;
+    tmp->prev = head;
+
     head = tmp;
     _capacity_head += newSize;
     _capacity += newSize;
-
 }
 
 /* Change the size tail of the current deque */
 template<typename T>
-void MyDeque<T>::resize_tail(const size_t size) {
+void MyDeque<T>::resize_tail(const int size) {
     Node *tmp = new Node;
-    size_t newSize = size * 2;
+    int newSize = size * 2;
     tmp->dequePtr = new T[newSize];
-    tail->next = tmp->dequePtr;
-    tmp->prev = tail->dequePtr;
     tmp->count = 0;
     tmp->capacity = newSize;
+    tail->next = tmp;
+    tmp->prev = tail;
+
     tail = tmp;
     _capacity_tail += newSize;
     _capacity += newSize;
@@ -183,21 +173,26 @@ T &MyDeque<T>::back() const {
 template<typename T>
 void MyDeque<T>::pop_front() {
     if (empty()) {
-        std::cerr << "Error [pop_front]. deque is empty!" << std::endl;
+        std::cerr << "Error [pop_back]. deque is empty!" << std::endl;
         exit(1);
-    } else if (head->count != 0) {
-        head->dequePtr--;
-    } else if (head->count == 0 && _count_head != 0) {
-        _capacity_head -= head->capacity;
-        head->dequePtr = head->prev;
-        delete[] head->next;
-    }
-    if (_count_head != 0) {
+    } else if (_count_head > 1) {
+        if (head->count > 1) {
+            head->dequePtr--;
+            head->count--;
+        } else if (head->count == 1) {
+            delete[] head->dequePtr;
+            _capacity -= head->capacity;
+            _capacity_head -= head->capacity;
+            head = head->prev;
+            head->next = NULL;
+        }
         _count_head--;
+        _size--;
+    } else if(_count_head == 1){
         head->count--;
+        _count_head--;
         _size--;
     }
-
 }
 
 /* Delete the last element from the deque */
@@ -206,16 +201,22 @@ void MyDeque<T>::pop_back() {
     if (empty()) {
         std::cerr << "Error [pop_back]. deque is empty!" << std::endl;
         exit(1);
-    } else if (tail->count != 0) {
-        tail->dequePtr--;
-    } else if (tail->count == 0 && _count_tail != 0) {
-        _capacity_tail -= tail->capacity;
-        tail->dequePtr = tail->prev;
-        delete[] tail->next;
-    }
-    if (_count_tail != 0) {
+    }else if (_count_tail > 1) {
+        if (tail->count > 1) {
+            tail->dequePtr--;
+            tail->count--;
+        } else if (tail->count == 1) {
+            delete[] tail->dequePtr;
+            _capacity -= tail->capacity;
+            _capacity_tail -= tail->capacity;
+            tail = tail->prev;
+            tail->next = NULL;
+        }
         _count_tail--;
+        _size--;
+    } else if(_count_tail == 1){
         tail->count--;
+        _count_tail--;
         _size--;
     }
 }

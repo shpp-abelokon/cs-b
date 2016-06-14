@@ -5,17 +5,19 @@
 #include "MyQueue.h"
 #include "MyDeque.h"
 
-#define DEBUG_MyVector true
+#define DEBUG_MyVector false
 #define DEBUG_MyList false
 #define DEBUG_MyStack false
 #define DEBUG_MyQueue false
-#define DEBUG_MyDeque false
+#define DEBUG_MyDeque true
 
 void separator();
+
 
 using namespace std;
 
 int main() {
+
 
     if (DEBUG_MyDeque) {
         cout << "Create a first 'a' Deque and fill in pish_bakc {\"Java\",\"C++\"} " << endl;
@@ -168,9 +170,15 @@ int main() {
             cout << "MyList b [" << i << "] " << *itr << endl;
         }
         cout << "MyList b.size: " << b.size() << endl;
+        itr = a.begin();
+        itr_end = b.end();
+        for (int i = 0; itr != itr_end; ++itr, i++) {
+            cout << "MyList a [" << i << "] " << *itr << endl;
+        }
+        cout << "MyList a.size: " << b.size() << endl;
         separator();
         cout << "Assign the list \"b=a\": " << endl;
-        b = a;
+        a = b;
         itr = b.begin();
         itr_end = b.end();
         for (int i = 0; itr != itr_end; ++itr, i++) {
@@ -240,7 +248,7 @@ int main() {
         }
         separator();
         cout << "The called method p.reserve(20);" << endl;
-        p.reserve(20);
+        p.reserve(10);
         cout << "MyVector p.capacity: " << p.capacity() << endl;
         cout << "MyVector p.size: " << p.size() << endl;
         separator();
@@ -256,8 +264,8 @@ int main() {
         cout << "Compare the vectors \"p!=a\": " << boolalpha << (p != a) << endl;
         cout << "The called method p.swap(a); " << endl;
         p.swap(a);
-        for (int j = 0; j < p.size(); ++j) {
-            cout << "MyVector p [" << j << "] " << p[j] << endl;
+        for (int j = 0; j < a.size(); ++j) {
+            cout << "MyVector a [" << j << "] " << a[j] << endl;
         }
         separator();
         cout << "The called method p.max_size(); " << p.max_size() << endl;
