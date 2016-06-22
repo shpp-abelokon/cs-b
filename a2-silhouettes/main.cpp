@@ -51,7 +51,7 @@ int main() {
     cout << "Enter the file with the silhouettes: ";
     if (DEBUG) {
         filename = "sport-silhouettes-vector-free-27120.png";
-    }else{
+    } else {
         getline(cin, filename);
     }
     cout << endl << "The number of silhouettes: " << countSilhouettes(filename) << endl;
@@ -151,24 +151,26 @@ Silhouette createObject(vector<int> &charactXOfObj, vector<int> &charactYOfObj) 
 /* Recursively select the object from a binary image */
 void recursionFillObject(int _rows, int _columns, int i, int j, bool **ptrIMG, vector<int> &charactXOfObj,
                          vector<int> &charactYOfObj) {
-    if (ptrIMG[i][j] == 0) return;
-    else {
-        ptrIMG[i][j] = 0; // note the coordinate of the object on which
-        charactXOfObj[j]++; // count the number of pixels in each column of object
-        charactYOfObj[i]++; // count the number of pixels in each row of object
-        if (j + 1 < _columns) {
-            recursionFillObject(_rows, _columns, i, j + 1, ptrIMG, charactXOfObj, charactYOfObj);
-        }
-        if (i - 1 > 0) {
-            recursionFillObject(_rows, _columns, i - 1, j, ptrIMG, charactXOfObj, charactYOfObj);
-        }
-        if (i + 1 < _rows) {
-            recursionFillObject(_rows, _columns, i + 1, j, ptrIMG, charactXOfObj, charactYOfObj);
-        }
-        if (j - 1 > 0) {
-            recursionFillObject(_rows, _columns, i, j - 1, ptrIMG, charactXOfObj, charactYOfObj);
-        }
+    if (ptrIMG[i][j] == 0) {
+        return;
     }
+
+    ptrIMG[i][j] = 0; // note the coordinate of the object on which
+    charactXOfObj[j]++; // count the number of pixels in each column of object
+    charactYOfObj[i]++; // count the number of pixels in each row of object
+    if (j + 1 < _columns) {
+        recursionFillObject(_rows, _columns, i, j + 1, ptrIMG, charactXOfObj, charactYOfObj);
+    }
+    if (i - 1 > 0) {
+        recursionFillObject(_rows, _columns, i - 1, j, ptrIMG, charactXOfObj, charactYOfObj);
+    }
+    if (i + 1 < _rows) {
+        recursionFillObject(_rows, _columns, i + 1, j, ptrIMG, charactXOfObj, charactYOfObj);
+    }
+    if (j - 1 > 0) {
+        recursionFillObject(_rows, _columns, i, j - 1, ptrIMG, charactXOfObj, charactYOfObj);
+    }
+
 }
 
 /*
