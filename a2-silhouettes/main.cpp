@@ -71,9 +71,9 @@ string countSilhouettes(string &_filename) {
 
     bool **binaryImage = createMatrix(img, rows, columns); // Creates binary image
     delete img;
-    vector<int> numberOfObjectsEachRow(rows); // the number of objects in each row
+    vector<int> numberObjectsOfEachRow(rows); // the number of objects in each row
     calculateNumberOfObjectsEachRow(binaryImage, rows, columns,
-                                    numberOfObjectsEachRow); // сount the number of objects in each row
+                                    numberObjectsOfEachRow); // сount the number of objects in each row
 
 
     vector<int> numberOfPixelsEachColumnObject(columns); // the number of pixels in each column
@@ -96,23 +96,25 @@ string countSilhouettes(string &_filename) {
  *  @return - int approximateNumObj - Approximate number of person in the image
  */
 int calculateApproximateNumbersOfObjects(vector<Silhouette> &separatedObjects, int averageHeight) {
-    int ApproximateNumbersObject = 0;
+    int approximateNumbersObject = 0;
     for (int i = 0; i < separatedObjects.size(); ++i) {
         Silhouette dataObj = separatedObjects[i];
         if (dataObj.height > averageHeight / 2) { // discard all the objects height
             // Compare the proportions of body width with its height
             if ((dataObj.width <= dataObj.height / 2, 7) && (dataObj.width >= dataObj.height / 4, 7)) {
-                ApproximateNumbersObject++;
+                approximateNumbersObject++;
             }
         }
     }
-    return ApproximateNumbersObject;
+    return approximateNumbersObject;
 }
 
 /* Delete binary image */
 void deleteBinaryImage(bool **pBoolean, int rows) {
-    delete [] pBoolean [0];
-    delete [] pBoolean;
+    for (int i = 0; i < rows; ++i) {
+        delete[] pBoolean[i];
+    }
+    delete[] pBoolean;
 }
 
 /* find the width and height of the object */
