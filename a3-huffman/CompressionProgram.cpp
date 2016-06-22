@@ -16,14 +16,14 @@
 void CompressionProgram::compressFile(string &ptrF) {
 
     /* Create a vector of characters ranking */
-    vector<int> symbolRating(256);
-    createSymbolsRating(ptrF, symbolRating);
+    vector<int> ratingOfSymbol(256);
+    createRankingOfSymbols(ptrF, ratingOfSymbol);
 
-    /* Create a list of nodes pointing to the symbols in symbolRating */
-    list<Node *> listNodesOfSymbolFrequencies = createListOfFrequenciesOfSymbolsNodes(symbolRating);
+    /* Create a list of nodes pointing to the symbols in ratingOfSymbol */
+    list<Node *> listOfNodesRatingsSymbols = createListOfNodesWithRatingsSymbols(ratingOfSymbol);
 
     /* Create the root of the binary tree Huffman */
-    Node *root = createBinaryTreeHuffman(listNodesOfSymbolFrequencies);
+    Node *root = createHuffmanBinaryTree(listOfNodesRatingsSymbols);
 
     /* Create Table of symbols and their codes */
     vector<bool> code; // temporary vector to store codes
@@ -33,10 +33,10 @@ void CompressionProgram::compressFile(string &ptrF) {
 
     /* Debug */
     if (DEBUG)
-        printBinaryTreeHuffman(root, 0); // Output to the console a binary tree Huffman.
+        printBinaryTreeOfHuffman(root, 0); // Output to the console a binary tree Huffman.
 
     string codefile = ptrF + ".huff";
-    createCompressedFile(codefile, ptrF, table, symbolRating);
+    createCompressedFile(codefile, ptrF, table, ratingOfSymbol);
     cout << "File compressed!" << endl;
 
 }
@@ -55,9 +55,9 @@ void CompressionProgram::decompressionFile(string &ptrF) {
     for (int i = 0; i < tableSize; i++) {
         iFile.read((char *) &symbolRating[i], sizeof(symbolRating[i]));
     }
-    list<Node *> listNodesOfSymbolFrequencies = createListOfFrequenciesOfSymbolsNodes(symbolRating);
+    list<Node *> listNodesOfSymbolFrequencies = createListOfNodesWithRatingsSymbols(symbolRating);
     /* Create the root of the binary tree Huffman */
-    Node *root = createBinaryTreeHuffman(listNodesOfSymbolFrequencies);
+    Node *root = createHuffmanBinaryTree(listNodesOfSymbolFrequencies);
     Node *p = root;
     unsigned char byte;
     int count = 0;
@@ -66,10 +66,9 @@ void CompressionProgram::decompressionFile(string &ptrF) {
     while (!iFile.eof()) {
 
         bool b = byte & (1 << (7 - count));
-        if (b)
-            p = p->right;
-        else
-            p = p->left;
+
+        p = (b) ? p->right : p->left;
+
         if (p->symbol) {
             unsigned char k = p->symbol;
             oFile.put(k);
@@ -87,7 +86,7 @@ void CompressionProgram::decompressionFile(string &ptrF) {
 }
 
 /* Create a vector of characters ranking  */
-void CompressionProgram::createSymbolsRating(string &ptrF, vector<int> &symbolRating) {
+void CompressionProgram::createRankingOfSymbols(string &ptrF, vector<int> &symbolRating) {
     ifstream file(ptrF.c_str(), ios::binary);
     while (!file.eof()) {
         unsigned char ch = file.get();
@@ -106,7 +105,7 @@ void CompressionProgram::createSymbolsRating(string &ptrF, vector<int> &symbolRa
 }
 
 /* Create a list of nodes pointing to the symbols in vector */
-list<Node *> CompressionProgram::createListOfFrequenciesOfSymbolsNodes(vector<int> &symbolRating) {
+list<Node *> CompressionProgram::createListOfNodesWithRatingsSymbols(vector<int> &symbolRating) {
 
     list<Node *> listNode;
 
@@ -135,7 +134,7 @@ list<Node *> CompressionProgram::createListOfFrequenciesOfSymbolsNodes(vector<in
  *  Create the root of the binary tree Huffman
  *  @return - Node* root
  */
-Node *CompressionProgram::createBinaryTreeHuffman(list<Node *> &ptrList) {
+Node *CompressionProgram::createHuffmanBinaryTree(list<Node *> &ptrList) {
     while (ptrList.size() != 1) {
         ptrList.sort(Node::MyCompare()); // Sort the list of nodes, restart operators - MyCompare
 
@@ -172,9 +171,9 @@ void CompressionProgram::createTableOfEncodedSymbol(Node *root, vector<vector<bo
 }
 
 /* print in console Binary Tree Huffman */
-void CompressionProgram::printBinaryTreeHuffman(Node *root, size_t s = 0) {
+void CompressionProgram::printBinaryTreeOfHuffman(Node *root, size_t s = 0) {
     if (root != NULL) {
-        printBinaryTreeHuffman(root->left, s + 3);
+        printBinaryTreeOfHuffman(root->left, s + 3);
         for (unsigned i = 0; i < s; i++) { //
             cout << "  ";
         }
@@ -182,7 +181,7 @@ void CompressionProgram::printBinaryTreeHuffman(Node *root, size_t s = 0) {
             cout << root->value << " (" << root->symbol << ")" << endl;
         else
             cout << root->value << endl;
-        printBinaryTreeHuffman(root->right, s + 3);
+        printBinaryTreeOfHuffman(root->right, s + 3);
     }
 }
 

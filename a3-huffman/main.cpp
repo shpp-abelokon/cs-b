@@ -8,7 +8,7 @@
 
 void displayGreeting();
 
-string &fileRequest(string filename);
+string &requestFile(string filename);
 
 using namespace std;
 
@@ -22,16 +22,16 @@ int main() {
         string filename;
         CompressionProgram *file = new CompressionProgram();
         if (task == "encode")
-            file->compressFile(fileRequest(CODED_FILE));
+            file->compressFile(requestFile(CODED_FILE));
         else if (task == "decode")
-            file->decompressionFile(fileRequest(DECODED_FILE));
+            file->decompressionFile(requestFile(DECODED_FILE));
         else
             cout << "Unknown commando please try again!" << endl;
     }
     return 0;
 }
 
-string &fileRequest(string filename) {
+string &requestFile(string filename) {
     if (!DEBUG) {
         cout << "Enter filename: ";
         getline(cin, filename);

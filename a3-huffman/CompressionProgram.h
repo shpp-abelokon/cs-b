@@ -26,15 +26,15 @@ public:
 
     void decompressionFile(string &ptrF);
 
-    void createSymbolsRating(string &ptrF, vector<int> &symbolRating);
+    void createRankingOfSymbols(string &ptrF, vector<int> &symbolRating);
 
-    list<Node *> createListOfFrequenciesOfSymbolsNodes(vector<int> &symbolRating);
+    list<Node *> createListOfNodesWithRatingsSymbols(vector<int> &symbolRating);
 
-    Node *createBinaryTreeHuffman(list<Node *> &ptrList);
+    Node *createHuffmanBinaryTree(list<Node *> &ptrList);
 
     void createTableOfEncodedSymbol(Node *root, vector<vector<bool> > &ptrTable, vector<bool> &code);
 
-    void printBinaryTreeHuffman(Node *pNode, size_t s);
+    void printBinaryTreeOfHuffman(Node *pNode, size_t s);
 
     void createCompressedFile(string codefile, string &ptrF, vector<vector<bool> > table, vector<int> symbolRating);
 
